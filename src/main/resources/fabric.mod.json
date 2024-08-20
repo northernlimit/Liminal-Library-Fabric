@@ -30,5 +30,10 @@
 		"java": ">=17",
 		"fabric-api": "*"
 	},
-	"accessWidener": "limlib.accesswidener"
+	"accessWidener": "limlib.accesswidener",
+	"custom": {
+		"modmenu": {
+			"badges": [ "library" ]
+		}
+	}
 }
