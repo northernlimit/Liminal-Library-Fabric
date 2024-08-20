@@ -26,6 +26,9 @@ import org.slf4j.LoggerFactory;
 public class Limlib {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Limlib");
+	public static Identifier id(String id) {
+		return new Identifier("limlib", id);
+	}
 
 	public static void onInitialize() {
 		LimlibWorld.load();
@@ -49,6 +52,8 @@ public class Limlib {
 		FabricLoader.getInstance()
 			.getEntrypoints(LimlibRegistrar.ENTRYPOINT_KEY, LimlibRegistrar.class)
 			.forEach(LimlibRegistrar::registerHooks);
+
+		//LimlibBiomes.init();
 	}
 
 }

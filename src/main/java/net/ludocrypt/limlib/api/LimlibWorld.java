@@ -4,10 +4,13 @@ import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Lifecycle;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.ludocrypt.limlib.impl.mixin.RegistriesAccessor;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
@@ -18,6 +21,13 @@ public class LimlibWorld {
 		.ofRegistry(new Identifier("limlib", "limlib_world"));
 	public static final Registry<LimlibWorld> LIMLIB_WORLD = RegistriesAccessor
 		.callCreate(LIMLIB_WORLD_KEY, Lifecycle.stable(), registry -> new LimlibWorld(() -> null, (r) -> null));
+
+	/*
+	*public static final SimpleRegistry<LimlibWorld> LIMLIB_WORLD = FabricRegistryBuilder
+	*		.createSimple(LIMLIB_WORLD_KEY)
+	*		.attribute(RegistryAttribute.SYNCED)
+	*		.buildAndRegister();
+	*/
 
 	private Supplier<DimensionType> dimensionTypeSupplier;
 	private Function<RegistryProvider, DimensionOptions> dimensionOptionsSupplier;

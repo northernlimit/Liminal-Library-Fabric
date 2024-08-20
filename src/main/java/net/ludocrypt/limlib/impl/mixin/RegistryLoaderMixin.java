@@ -22,20 +22,19 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 @Mixin(RegistryLoader.class)
@@ -48,12 +47,16 @@ public class RegistryLoaderMixin {
 	static {
 		List<RegistryLoader.Entry<?>> newRegistries = Lists.newArrayList();
 		newRegistries.addAll(DYNAMIC_REGISTRIES);
-		newRegistries.add(new RegistryLoader.Entry<>(PostEffect.POST_EFFECT_KEY, PostEffect.CODEC));
-		newRegistries.add(new RegistryLoader.Entry<>(LDimensionEffects.DIMENSION_EFFECTS_KEY, LDimensionEffects.CODEC));
-		newRegistries.add(new RegistryLoader.Entry<>(SoundEffects.SOUND_EFFECTS_KEY, SoundEffects.CODEC));
-		newRegistries.add(new RegistryLoader.Entry<>(Skybox.SKYBOX_KEY, Skybox.CODEC));
+		newRegistries.add(new RegistryLoader.Entry(PostEffect.POST_EFFECT_KEY, PostEffect.CODEC));
+		newRegistries.add(new RegistryLoader.Entry(LDimensionEffects.DIMENSION_EFFECTS_KEY, LDimensionEffects.CODEC));
+		newRegistries.add(new RegistryLoader.Entry(SoundEffects.SOUND_EFFECTS_KEY, SoundEffects.CODEC));
+		newRegistries.add(new RegistryLoader.Entry(Skybox.SKYBOX_KEY, Skybox.CODEC));
 		DYNAMIC_REGISTRIES = newRegistries;
 	}
+
+	@Unique
+	private static final AtomicReference<DynamicRegistryManager.Immutable> LOADED_REGISTRY = new AtomicReference<>();
+
 
 	@Inject(method = "load(Lnet/minecraft/registry/RegistryOps$RegistryInfoGetter;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/registry/MutableRegistry;Lcom/mojang/serialization/Decoder;Ljava/util/Map;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Decoder;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;", shift = Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static <E> void limlib$loadRegistryContents(RegistryOps.RegistryInfoGetter infoLookup,
@@ -106,6 +109,13 @@ public class RegistryLoaderMixin {
 		LimlibRegistryHooks.REGISTRY_HOOKS
 			.getOrDefault(registryKey, Sets.newHashSet())
 			.forEach((registrarhook -> ((LimlibRegistryHook<E>) registrarhook).register(infoLookup, registryKey, registry)));
+	}
+
+	@Inject(method = "load(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/registry/DynamicRegistryManager;Ljava/util/List;)Lnet/minecraft/registry/DynamicRegistryManager$Immutable;", at = @At("TAIL"))
+	private static void limlib$loadRegistriesIntoManager(ResourceManager resourceManager,
+														 DynamicRegistryManager registryManager, List<RegistryLoader.Entry<?>> decodingData,
+														 CallbackInfoReturnable<DynamicRegistryManager.Immutable> ci) {
+		LOADED_REGISTRY.set(registryManager.toImmutable());
 	}
 
 }

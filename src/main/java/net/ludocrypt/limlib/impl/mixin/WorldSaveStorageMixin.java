@@ -20,7 +20,7 @@ import java.util.Map.Entry;
 @Mixin(LevelStorage.class)
 public class WorldSaveStorageMixin {
 
-	@ModifyVariable(method = "Lnet/minecraft/world/level/storage/LevelStorage;parseSaveProperties(Lcom/mojang/serialization/Dynamic;Lnet/minecraft/resource/DataConfiguration;Lnet/minecraft/registry/Registry;Lnet/minecraft/registry/DynamicRegistryManager$Immutable;)Lnet/minecraft/world/level/storage/ParsedSaveProperties;", at = @At(value = "STORE"), ordinal = 2)
+	@ModifyVariable(method = "parseSaveProperties(Lcom/mojang/serialization/Dynamic;Lnet/minecraft/resource/DataConfiguration;Lnet/minecraft/registry/Registry;Lnet/minecraft/registry/DynamicRegistryManager$Immutable;)Lnet/minecraft/world/level/storage/ParsedSaveProperties;", at = @At(value = "STORE"), ordinal = 2)
 	private static <T> Dynamic<T> limlib$readGeneratorProperties$datafix(Dynamic<T> in, Dynamic<?> levelData,
 			DataConfiguration featureAndDataSettings, Registry<DimensionOptions> registry,
 			DynamicRegistryManager.Immutable frozen) {
@@ -39,7 +39,7 @@ public class WorldSaveStorageMixin {
 			DynamicRegistryManager registryManager) {
 		Dynamic<T> dimensions = in.get("dimensions").orElseEmptyMap();
 
-		if (!dimensions.get(key.getValue().toString()).result().isPresent()) {
+		if (dimensions.get(key.getValue().toString()).result().isEmpty()) {
 			Map<Dynamic<T>, Dynamic<T>> dimensionsMap = Maps.newHashMap(dimensions.getMapValues().result().get());
 
 			dimensionsMap

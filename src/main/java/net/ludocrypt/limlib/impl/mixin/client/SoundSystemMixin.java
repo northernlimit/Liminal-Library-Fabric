@@ -4,6 +4,7 @@ import com.google.common.collect.Multimap;
 import net.ludocrypt.limlib.api.effects.sound.distortion.DistortionFilter;
 import net.ludocrypt.limlib.api.effects.sound.reverb.ReverbFilter;
 import net.ludocrypt.limlib.impl.access.SoundSystemAccess;
+import net.ludocrypt.limlib.impl.access.SourceAccessor;
 import net.minecraft.client.sound.*;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
@@ -25,10 +26,6 @@ import java.util.function.Consumer;
 
 @Mixin(SoundSystem.class)
 public abstract class SoundSystemMixin implements SoundSystemAccess {
-
-	@Shadow
-	@Final
-	private Map<SoundInstance, Channel.SourceManager> sources;
 
 	@Shadow
 	@Final
