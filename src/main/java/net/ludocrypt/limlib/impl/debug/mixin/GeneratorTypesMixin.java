@@ -5,6 +5,7 @@ import net.ludocrypt.limlib.impl.debug.DebugWorld;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.dimension.DimensionOptionsRegistryHolder;
 import net.minecraft.world.gen.WorldPreset;
 import net.minecraft.world.gen.WorldPresets;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -19,8 +20,7 @@ import java.util.Optional;
 public class GeneratorTypesMixin {
 
 	@Inject(method = "getWorldPreset", at = @At("HEAD"), cancellable = true)
-	private static void limlib$getKey(Registry<DimensionOptions> registry,
-			CallbackInfoReturnable<Optional<RegistryKey<WorldPreset>>> ci) {
+	private static void limlib$getKey(DimensionOptionsRegistryHolder registry, CallbackInfoReturnable<Optional<RegistryKey<WorldPreset>>> cir) {
 		Optional<RegistryKey<WorldPreset>> optional = registry
 			.getOrEmpty(DimensionOptions.OVERWORLD)
 			.flatMap(dimensionOptions -> {
@@ -34,7 +34,7 @@ public class GeneratorTypesMixin {
 			});
 
 		if (optional.isPresent()) {
-			ci.setReturnValue(optional);
+			cir.setReturnValue(optional);
 		}
 
 	}

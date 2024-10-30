@@ -14,9 +14,7 @@ import net.minecraft.resource.ResourceFinder;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
@@ -29,20 +27,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 @Mixin(TagGroupLoader.class)
 public class TagGroupLoaderMixin<T, O> implements TagGroupLoaderAccess<O> {
-
-	@Shadow
-	@Final
-	Function<Identifier, Optional<? extends T>> registryGetter;
 
 	@Unique
 	Optional<RegistryKey<? extends Registry<O>>> associatedRegistryKey = Optional.empty();
 
 	@SuppressWarnings("unchecked")
-	@Inject(method = "Lnet/minecraft/registry/tag/TagGroupLoader;loadTags(Lnet/minecraft/resource/ResourceManager;)Ljava/util/Map;", at = @At(value = "INVOKE", target = "Ljava/util/Map;computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;", shift = Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(method = "loadTags(Lnet/minecraft/resource/ResourceManager;)Ljava/util/Map;", at = @At(value = "INVOKE", target = "Ljava/util/Map;computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;", shift = Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
 	private void limlib$loadTags(ResourceManager manager,
 			CallbackInfoReturnable<Map<Identifier, List<TagGroupLoader.TrackedEntry>>> ci,
 			Map<Identifier, List<TagGroupLoader.TrackedEntry>> map, ResourceFinder resourceFileNamespace,

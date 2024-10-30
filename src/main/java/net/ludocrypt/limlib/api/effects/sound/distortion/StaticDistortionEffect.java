@@ -1,6 +1,7 @@
 package net.ludocrypt.limlib.api.effects.sound.distortion;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
@@ -15,7 +16,7 @@ import org.lwjgl.openal.EXTEfx;
  */
 public class StaticDistortionEffect extends DistortionEffect {
 
-	public static final Codec<StaticDistortionEffect> CODEC = RecordCodecBuilder.create((instance) -> {
+	public static final MapCodec<StaticDistortionEffect> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
 		return instance.group(Codec.BOOL.optionalFieldOf("enabled", true).stable().forGetter((distortion) -> {
 			return distortion.enabled;
 		}), Codec
@@ -74,7 +75,7 @@ public class StaticDistortionEffect extends DistortionEffect {
 	}
 
 	@Override
-	public Codec<? extends DistortionEffect> getCodec() {
+	public MapCodec<? extends DistortionEffect> getCodec() {
 		return CODEC;
 	}
 

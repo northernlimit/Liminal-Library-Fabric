@@ -117,8 +117,8 @@ public class ReverbFilter {
 
 		if (!(client == null || client.world == null)) {
 			Optional<SoundEffects> soundEffects = LookupGrabber
-				.snatch(client.world.getRegistryManager().getOptionalWrapper(SoundEffects.SOUND_EFFECTS_KEY).get(),
-					RegistryKey.of(SoundEffects.SOUND_EFFECTS_KEY, client.world.getRegistryKey().getValue()));
+					.snatch(client.world.getRegistryManager().getOptionalWrapper(SoundEffects.SOUND_EFFECTS_KEY).get(),
+							RegistryKey.of(SoundEffects.SOUND_EFFECTS_KEY, client.world.getRegistryKey().getValue()));
 
 			if (soundEffects.isPresent()) {
 				Optional<ReverbEffect> reverb = soundEffects.get().getReverb();
@@ -129,9 +129,8 @@ public class ReverbFilter {
 
 						for (int i = 0; i < 2; i++) {
 							AL11.alSourcei(sourceID, EXTEfx.AL_DIRECT_FILTER, 0);
-							AL11
-								.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER,
-									update(soundInstance, reverb.get()) ? slot : 0, 0, 0);
+							AL11.alSource3i(sourceID, EXTEfx.AL_AUXILIARY_SEND_FILTER,
+											update(soundInstance, reverb.get()) ? slot : 0, 0, 0);
 							int error = AL11.alGetError();
 
 							if (error == AL11.AL_NO_ERROR) {

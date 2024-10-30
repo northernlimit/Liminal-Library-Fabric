@@ -2,8 +2,7 @@ package net.ludocrypt.limlib.impl.debug;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.ludocrypt.limlib.api.world.NbtGroup;
 import net.ludocrypt.limlib.api.world.NbtPlacerUtil;
@@ -16,14 +15,11 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.StructureBlockBlockEntity;
 import net.minecraft.block.enums.StructureBlockMode;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryOps;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.server.world.ChunkHolder.Unloaded;
-import net.minecraft.server.world.ServerLightingProvider;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
@@ -32,18 +28,19 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.FixedBiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkGenerationContext;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.FullChunkConverter;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Function;
 
 public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 
-	public static final Codec<DebugNbtChunkGenerator> CODEC = RecordCodecBuilder.create((instance) -> {
+	public static final MapCodec<DebugNbtChunkGenerator> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
 		return instance
 			.group(RegistryOps.getEntryCodec(BiomeKeys.THE_VOID))
 			.apply(instance, instance.stable(DebugNbtChunkGenerator::new));
@@ -55,7 +52,7 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	@Override
-	protected Codec<? extends ChunkGenerator> getCodec() {
+	protected MapCodec<? extends ChunkGenerator> getCodec() {
 		return CODEC;
 	}
 
@@ -65,17 +62,14 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<Chunk> populateNoise(ChunkRegion chunkRegion, ChunkStatus targetStatus, Executor executor,
-			ServerWorld world, ChunkGenerator generator, StructureTemplateManager structureTemplateManager,
-			ServerLightingProvider lightingProvider,
-			Function<Chunk, CompletableFuture<Either<Chunk, Unloaded>>> fullChunkConverter, List<Chunk> chunks,
-			Chunk chunk) {
+	public CompletableFuture<Chunk> populateNoise(ChunkRegion chunkRegion, ChunkGenerationContext context, ChunkStatus chunkStatus,
+												  Executor executor, FullChunkConverter fullChunkConverter, List<Chunk> chunks, Chunk chunk) {
 
 		if (chunk.getPos().getStartPos().getX() < 0 || chunk.getPos().getStartPos().getZ() < 0) {
 			return CompletableFuture.completedFuture(chunk);
 		}
 
-		ResourceManager resourceManager = world.getServer().getResourceManager();
+		ResourceManager resourceManager = context.world().getServer().getResourceManager();
 
 		if (positions.isEmpty()) {
 			Map<Identifier, List<Resource>> ids = resourceManager
@@ -171,7 +165,7 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 		region.setBlockState(pos, state, update, 1);
 		blockEntityNbt.ifPresent((nbt) -> {
 			if (region.getBlockEntity(pos) != null)
-				region.getBlockEntity(pos).readNbt(nbt);
+				region.getBlockEntity(pos).readNbt(nbt, BuiltinRegistries.createWrapperLookup());
 		});
 	}
 

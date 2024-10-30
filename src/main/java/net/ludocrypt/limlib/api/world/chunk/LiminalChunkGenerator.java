@@ -1,12 +1,7 @@
 package net.ludocrypt.limlib.api.world.chunk;
 
-import com.mojang.datafixers.util.Either;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.server.world.ChunkHolder;
-import net.minecraft.server.world.ServerLightingProvider;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.structure.StructureTemplateManager;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap.Type;
@@ -14,7 +9,9 @@ import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkGenerationContext;
 import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.FullChunkConverter;
 import net.minecraft.world.gen.GenerationStep.Carver;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
@@ -25,7 +22,6 @@ import net.minecraft.world.gen.noise.NoiseConfig;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Function;
 
 public abstract class LiminalChunkGenerator extends ChunkGenerator {
 
@@ -65,11 +61,8 @@ public abstract class LiminalChunkGenerator extends ChunkGenerator {
 	 * ChunkRegion as opposed to world when setting blocks, as it allows you to
 	 * extend through multiple chunks in {@link getPlacementRadius} away.
 	 */
-	public abstract CompletableFuture<Chunk> populateNoise(ChunkRegion chunkRegion, ChunkStatus targetStatus,
-			Executor executor, ServerWorld world, ChunkGenerator generator,
-			StructureTemplateManager structureTemplateManager, ServerLightingProvider lightingProvider,
-			Function<Chunk, CompletableFuture<Either<Chunk, ChunkHolder.Unloaded>>> fullChunkConverter, List<Chunk> chunks,
-			Chunk chunk);
+	public abstract CompletableFuture<Chunk> populateNoise(ChunkRegion chunkRegion, ChunkGenerationContext context, ChunkStatus chunkStatus, Executor executor,
+														   FullChunkConverter fullChunkConverter, List<Chunk> chunks, Chunk chunk);
 
 	@Override
 	public int getSeaLevel() {

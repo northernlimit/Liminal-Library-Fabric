@@ -22,10 +22,6 @@ public class DimensionVisualEffectsMixin {
 			.snatch(LDimensionEffects.MIXIN_WORLD_LOOKUP.get(),
 				RegistryKey.of(LDimensionEffects.DIMENSION_EFFECTS_KEY, dimensionType.effects()));
 
-		if (dimensionEffects.isPresent()) {
-			ci.setReturnValue(dimensionEffects.get().getDimensionEffects());
-		}
-
+        dimensionEffects.ifPresent(lDimensionEffects -> ci.setReturnValue(lDimensionEffects.getDimensionEffects()));
 	}
-
 }

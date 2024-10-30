@@ -2,6 +2,7 @@ package net.ludocrypt.limlib.api.effects.sound.distortion;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
+import com.mojang.serialization.MapCodec;
 import net.ludocrypt.limlib.impl.mixin.RegistriesAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
@@ -16,15 +17,15 @@ import java.util.function.Function;
  */
 public abstract class DistortionEffect {
 
-	public static final RegistryKey<Registry<Codec<? extends DistortionEffect>>> DISTORTION_EFFECT_CODEC_KEY = RegistryKey
+	public static final RegistryKey<Registry<MapCodec<? extends DistortionEffect>>> DISTORTION_EFFECT_CODEC_KEY = RegistryKey
 		.ofRegistry(new Identifier("limlib/codec/distortion_effect"));
-	public static final Registry<Codec<? extends DistortionEffect>> DISTORTION_EFFECT_CODEC = RegistriesAccessor
-		.callCreate(DISTORTION_EFFECT_CODEC_KEY, Lifecycle.stable(), (registry) -> StaticDistortionEffect.CODEC);
+	public static final Registry<MapCodec<? extends DistortionEffect>> DISTORTION_EFFECT_CODEC = RegistriesAccessor
+		.callCreate(DISTORTION_EFFECT_CODEC_KEY, (registry) -> StaticDistortionEffect.CODEC);
 	public static final Codec<DistortionEffect> CODEC = DISTORTION_EFFECT_CODEC
 		.getCodec()
 		.dispatchStable(DistortionEffect::getCodec, Function.identity());
 
-	public abstract Codec<? extends DistortionEffect> getCodec();
+	public abstract MapCodec<? extends DistortionEffect> getCodec();
 
 	/**
 	 * Whether or not a Sound Event should be ignored

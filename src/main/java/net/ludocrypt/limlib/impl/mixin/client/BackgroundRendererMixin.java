@@ -19,14 +19,10 @@ public abstract class BackgroundRendererMixin {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		Optional<LDimensionEffects> dimensionEffects = LookupGrabber
-			.snatch(client.world.getRegistryManager().getOptionalWrapper(LDimensionEffects.DIMENSION_EFFECTS_KEY).get(),
-				RegistryKey.of(LDimensionEffects.DIMENSION_EFFECTS_KEY, client.world.getRegistryKey().getValue()));
+				.snatch(client.world.getRegistryManager().getOptionalWrapper(LDimensionEffects.DIMENSION_EFFECTS_KEY).get(),
+						RegistryKey.of(LDimensionEffects.DIMENSION_EFFECTS_KEY, client.world.getRegistryKey().getValue()));
 
-		if (dimensionEffects.isPresent()) {
-			return dimensionEffects.get().getSkyShading();
-		}
+        return dimensionEffects.map(LDimensionEffects::getSkyShading).orElse(in);
 
-		return in;
-	}
-
+    }
 }

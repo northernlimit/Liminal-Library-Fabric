@@ -1,6 +1,7 @@
 package net.ludocrypt.limlib.api.effects.sound.reverb;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
@@ -15,7 +16,7 @@ import org.lwjgl.openal.EXTEfx;
  */
 public class StaticReverbEffect extends ReverbEffect {
 
-	public static final Codec<StaticReverbEffect> CODEC = RecordCodecBuilder.create((instance) -> {
+	public static final MapCodec<StaticReverbEffect> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
 		return instance.group(Codec.BOOL.optionalFieldOf("enabled", true).stable().forGetter((reverb) -> {
 			return reverb.enabled;
 		}), Codec
@@ -138,7 +139,7 @@ public class StaticReverbEffect extends ReverbEffect {
 	}
 
 	@Override
-	public Codec<? extends ReverbEffect> getCodec() {
+	public MapCodec<? extends ReverbEffect> getCodec() {
 		return CODEC;
 	}
 

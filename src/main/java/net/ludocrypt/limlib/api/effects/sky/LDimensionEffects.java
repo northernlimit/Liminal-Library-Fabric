@@ -1,7 +1,7 @@
 package net.ludocrypt.limlib.api.effects.sky;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Lifecycle;
+import com.mojang.serialization.MapCodec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.ludocrypt.limlib.impl.mixin.RegistriesAccessor;
@@ -19,10 +19,10 @@ import java.util.function.Function;
  */
 public abstract class LDimensionEffects {
 
-	public static final RegistryKey<Registry<Codec<? extends LDimensionEffects>>> DIMENSION_EFFECTS_CODEC_KEY = RegistryKey
+	public static final RegistryKey<Registry<MapCodec<? extends LDimensionEffects>>> DIMENSION_EFFECTS_CODEC_KEY = RegistryKey
 		.ofRegistry(new Identifier("limlib/codec/dimension_effects"));
-	public static final Registry<Codec<? extends LDimensionEffects>> DIMENSION_EFFECTS_CODEC = RegistriesAccessor
-		.callCreate(DIMENSION_EFFECTS_CODEC_KEY, Lifecycle.stable(), (registry) -> StaticDimensionEffects.CODEC);
+	public static final Registry<MapCodec<? extends LDimensionEffects>> DIMENSION_EFFECTS_CODEC = RegistriesAccessor
+		.callCreate(DIMENSION_EFFECTS_CODEC_KEY, (registry) -> StaticDimensionEffects.CODEC);
 	public static final Codec<LDimensionEffects> CODEC = DIMENSION_EFFECTS_CODEC
 		.getCodec()
 		.dispatchStable(LDimensionEffects::getCodec, Function.identity());
@@ -31,7 +31,7 @@ public abstract class LDimensionEffects {
 
 	public static final AtomicReference<RegistryWrapper<LDimensionEffects>> MIXIN_WORLD_LOOKUP = new AtomicReference<RegistryWrapper<LDimensionEffects>>();
 
-	public abstract Codec<? extends LDimensionEffects> getCodec();
+	public abstract MapCodec<? extends LDimensionEffects> getCodec();
 
 	@Environment(EnvType.CLIENT)
 	public abstract DimensionEffects getDimensionEffects();

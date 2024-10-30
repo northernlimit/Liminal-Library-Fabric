@@ -5,8 +5,7 @@
   "mixins": [
     "BootstrapMixin",
     "BuiltinDimensionTypesMixin",
-    "ChunkStatusMixin",
-    "DynamicRegistrySyncMixin",
+    "ChunkGeneratingMixin",
     "EntityMixin",
     "GeneratorTypeAccessor",
     "RegistriesAccessor",
@@ -18,11 +17,11 @@
     "WorldSaveStorageMixin"
   ],
   "client": [
-    "client.IntegratedServerLoaderMixin",
     "client.BackgroundRendererMixin",
     "client.ClientWorldMixin",
     "client.DimensionVisualEffectsMixin",
     "client.GameRendererMixin",
+    "client.IntegratedServerLoaderMixin",
     "client.MinecraftClientMixin",
     "client.SoundSystemMixin",
     "client.SourceMixin",

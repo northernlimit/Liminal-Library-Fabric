@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Bootstrap.class)
 public class BootstrapMixin {
 
-	@Inject(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/recipe/BrewingRecipeRegistry;registerDefaults()V", shift = Shift.AFTER))
+	@Inject(method = "initialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/EntitySelectorOptions;register()V", shift = Shift.BEFORE))
 	private static void limlib$initialize(CallbackInfo ci) {
 		Limlib.onInitialize();
 	}

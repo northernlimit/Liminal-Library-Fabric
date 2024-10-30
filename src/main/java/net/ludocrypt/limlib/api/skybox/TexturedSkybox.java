@@ -1,7 +1,7 @@
 package net.ludocrypt.limlib.api.skybox;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -15,7 +15,7 @@ import org.joml.Matrix4f;
 
 public class TexturedSkybox extends Skybox {
 
-	public static final Codec<TexturedSkybox> CODEC = RecordCodecBuilder.create((instance) -> {
+	public static final MapCodec<TexturedSkybox> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
 		return instance.group(Identifier.CODEC.fieldOf("skybox").stable().forGetter((sky) -> {
 			return sky.identifier;
 		})).apply(instance, instance.stable(TexturedSkybox::new));
@@ -88,7 +88,7 @@ public class TexturedSkybox extends Skybox {
 	}
 
 	@Override
-	public Codec<? extends Skybox> getCodec() {
+	public MapCodec<? extends Skybox> getCodec() {
 		return CODEC;
 	}
 

@@ -6,8 +6,11 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.BuiltinRegistries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -94,7 +97,7 @@ public abstract class AbstractNbtChunkGenerator extends LiminalChunkGenerator {
 				if (blockEntity != null) {
 
 					if (state.isOf(blockEntity.getCachedState().getBlock())) {
-						blockEntity.readNbt(blockEntityNbt.get());
+						blockEntity.readNbt(blockEntityNbt.get(), BuiltinRegistries.createWrapperLookup());
 					}
 
 				}
@@ -110,7 +113,7 @@ public abstract class AbstractNbtChunkGenerator extends LiminalChunkGenerator {
 
 	}
 
-	protected Identifier getContainerLootTable(LootableContainerBlockEntity container) {
+	protected RegistryKey<LootTable> getContainerLootTable(LootableContainerBlockEntity container) {
 		return LootTables.SIMPLE_DUNGEON_CHEST;
 	}
 

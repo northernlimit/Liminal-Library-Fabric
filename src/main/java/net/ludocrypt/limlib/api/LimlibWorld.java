@@ -3,10 +3,8 @@ package net.ludocrypt.limlib.api;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
-import com.mojang.serialization.Lifecycle;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.ludocrypt.limlib.impl.mixin.RegistriesAccessor;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryEntryLookup;
 import net.minecraft.registry.RegistryKey;
@@ -19,11 +17,13 @@ public class LimlibWorld {
 
 	public static final RegistryKey<Registry<LimlibWorld>> LIMLIB_WORLD_KEY = RegistryKey
 		.ofRegistry(new Identifier("limlib", "limlib_world"));
-	/*
+/*
 	public static final Registry<LimlibWorld> LIMLIB_WORLD = RegistriesAccessor
-		.callCreate(LIMLIB_WORLD_KEY, Lifecycle.stable(), registry -> new LimlibWorld(() -> null, (r) -> null));
+		.callCreate(LIMLIB_WORLD_KEY, registry -> new LimlibWorld(() -> null, (r) -> null));
 
-	 */
+ */
+
+
 
 
 	public static final SimpleRegistry<LimlibWorld> LIMLIB_WORLD = FabricRegistryBuilder
@@ -32,11 +32,13 @@ public class LimlibWorld {
 			.buildAndRegister();
 
 
+
+
 	private Supplier<DimensionType> dimensionTypeSupplier;
 	private Function<RegistryProvider, DimensionOptions> dimensionOptionsSupplier;
 
 	public LimlibWorld(Supplier<DimensionType> dimensionTypeSupplier,
-			Function<RegistryProvider, DimensionOptions> dimensionOptionsSupplier) {
+					   Function<RegistryProvider, DimensionOptions> dimensionOptionsSupplier) {
 		this.dimensionTypeSupplier = Suppliers.memoize(dimensionTypeSupplier);
 		this.dimensionOptionsSupplier = dimensionOptionsSupplier;
 	}

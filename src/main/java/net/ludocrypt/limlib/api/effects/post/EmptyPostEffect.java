@@ -1,16 +1,16 @@
 package net.ludocrypt.limlib.api.effects.post;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.Identifier;
 
 public class EmptyPostEffect extends PostEffect {
 
-	public static final Codec<EmptyPostEffect> CODEC = RecordCodecBuilder
-		.create((instance) -> instance.stable(new EmptyPostEffect()));
+	public static final MapCodec<EmptyPostEffect> CODEC = RecordCodecBuilder
+		.mapCodec((instance) -> instance.stable(new EmptyPostEffect()));
 
 	@Override
-	public Codec<? extends PostEffect> getCodec() {
+	public MapCodec<? extends PostEffect> getCodec() {
 		return CODEC;
 	}
 

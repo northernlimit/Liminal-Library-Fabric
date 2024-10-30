@@ -1,6 +1,7 @@
 package net.ludocrypt.limlib.api.effects.sky;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.Optional;
@@ -13,15 +14,15 @@ import java.util.Optional;
  */
 public class EmptyDimensionEffects extends StaticDimensionEffects {
 
-	public static final Codec<EmptyDimensionEffects> CODEC = RecordCodecBuilder
-		.create((instance) -> instance.stable(new EmptyDimensionEffects()));
+	public static final MapCodec<EmptyDimensionEffects> CODEC = RecordCodecBuilder
+		.mapCodec((instance) -> instance.stable(new EmptyDimensionEffects()));
 
 	public EmptyDimensionEffects() {
 		super(Optional.empty(), false, "NONE", false, false, false, 1.0F);
 	}
 
 	@Override
-	public Codec<? extends LDimensionEffects> getCodec() {
+	public MapCodec<? extends LDimensionEffects> getCodec() {
 		return CODEC;
 	}
 

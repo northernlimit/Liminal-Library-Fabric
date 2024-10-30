@@ -4,10 +4,10 @@ import com.mojang.authlib.GameProfile;
 import net.ludocrypt.limlib.api.LimlibTravelling;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
 	@Shadow
-	public ServerPlayNetworkHandler networkHandler;
+	public abstract void playSoundToPlayer(SoundEvent sound, SoundCategory category, float volume, float pitch);
 
 	public ServerPlayerEntityMixin(World world, BlockPos pos, float f, GameProfile gameProfile) {
 		super(world, pos, f, gameProfile);
@@ -33,7 +33,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity {
 
 		if (LimlibTravelling.travelingSound != null) {
 			this
-				.playSound(LimlibTravelling.travelingSound, SoundCategory.AMBIENT, LimlibTravelling.travelingVolume,
+				.playSoundToPlayer(LimlibTravelling.travelingSound, SoundCategory.AMBIENT, LimlibTravelling.travelingVolume,
 					LimlibTravelling.travelingPitch);
 		}
 

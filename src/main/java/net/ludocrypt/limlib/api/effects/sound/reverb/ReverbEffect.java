@@ -1,7 +1,7 @@
 package net.ludocrypt.limlib.api.effects.sound.reverb;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.Lifecycle;
+import com.mojang.serialization.MapCodec;
 import net.ludocrypt.limlib.impl.mixin.RegistriesAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
@@ -16,15 +16,15 @@ import java.util.function.Function;
  */
 public abstract class ReverbEffect {
 
-	public static final RegistryKey<Registry<Codec<? extends ReverbEffect>>> REVERB_EFFECT_CODEC_KEY = RegistryKey
+	public static final RegistryKey<Registry<MapCodec<? extends ReverbEffect>>> REVERB_EFFECT_CODEC_KEY = RegistryKey
 		.ofRegistry(new Identifier("limlib/codec/reverb_effect"));
-	public static final Registry<Codec<? extends ReverbEffect>> REVERB_EFFECT_CODEC = RegistriesAccessor
-		.callCreate(REVERB_EFFECT_CODEC_KEY, Lifecycle.stable(), (registry) -> StaticReverbEffect.CODEC);
+	public static final Registry<MapCodec<? extends ReverbEffect>> REVERB_EFFECT_CODEC = RegistriesAccessor
+		.callCreate(REVERB_EFFECT_CODEC_KEY, (registry) -> StaticReverbEffect.CODEC);
 	public static final Codec<ReverbEffect> CODEC = REVERB_EFFECT_CODEC
 		.getCodec()
 		.dispatchStable(ReverbEffect::getCodec, Function.identity());
 
-	public abstract Codec<? extends ReverbEffect> getCodec();
+	public abstract MapCodec<? extends ReverbEffect> getCodec();
 
 	/**
 	 * Whether or not a Sound Event should be ignored

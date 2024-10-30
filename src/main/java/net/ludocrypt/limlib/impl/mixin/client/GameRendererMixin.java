@@ -30,13 +30,13 @@ public class GameRendererMixin {
 
 	@Unique
 	private final Function<Identifier, PostProcesser> memoizedShaders = Util
-		.memoize(id -> PostProcesserManager.INSTANCE.find(id));
+		.memoize(PostProcesserManager.INSTANCE::find);
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;drawEntityOutlinesFramebuffer()V", shift = Shift.AFTER))
 	private void limlib$render(float tickDelta, long nanoTime, boolean renderLevel, CallbackInfo info) {
 		Optional<PostEffect> optionalPostEffect = LookupGrabber
-			.snatch(client.world.getRegistryManager().getOptionalWrapper(PostEffect.POST_EFFECT_KEY).get(),
-				RegistryKey.of(PostEffect.POST_EFFECT_KEY, client.world.getRegistryKey().getValue()));
+				.snatch(client.world.getRegistryManager().getOptionalWrapper(PostEffect.POST_EFFECT_KEY).get(),
+						RegistryKey.of(PostEffect.POST_EFFECT_KEY, client.world.getRegistryKey().getValue()));
 
 		if (optionalPostEffect.isPresent()) {
 			PostEffect postEffect = optionalPostEffect.get();

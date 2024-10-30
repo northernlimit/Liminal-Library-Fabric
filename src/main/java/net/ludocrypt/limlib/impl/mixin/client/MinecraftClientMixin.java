@@ -43,15 +43,13 @@ public class MinecraftClientMixin {
 
 		if (this.player != null) {
 			Optional<SoundEffects> soundEffects = LookupGrabber
-				.snatch(world.getRegistryManager().getOptionalWrapper(SoundEffects.SOUND_EFFECTS_KEY).get(),
-					RegistryKey.of(SoundEffects.SOUND_EFFECTS_KEY, world.getRegistryKey().getValue()));
+					.snatch(world.getRegistryManager().getOptionalWrapper(SoundEffects.SOUND_EFFECTS_KEY).get(),
+							RegistryKey.of(SoundEffects.SOUND_EFFECTS_KEY, world.getRegistryKey().getValue()));
 
 			if (soundEffects.isPresent()) {
 				Optional<MusicSound> musicSound = soundEffects.get().getMusic();
 
-				if (musicSound.isPresent()) {
-					ci.setReturnValue(musicSound.get());
-				}
+                musicSound.ifPresent(ci::setReturnValue);
 
 			}
 

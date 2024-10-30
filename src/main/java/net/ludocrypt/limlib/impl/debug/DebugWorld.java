@@ -2,11 +2,11 @@ package net.ludocrypt.limlib.impl.debug;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.mojang.serialization.Lifecycle;
 import net.ludocrypt.limlib.api.LimlibRegistrar;
 import net.ludocrypt.limlib.api.LimlibRegistryHooks;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntryInfo;
 import net.minecraft.registry.tag.WorldPresetTags;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.BiomeKeys;
@@ -23,20 +23,19 @@ public class DebugWorld implements LimlibRegistrar {
 
 	@Override
 	public void registerHooks() {
-		LimlibRegistryHooks.hook(RegistryKeys.WORLD_PRESET, (infoLookup, registryKey, registry) -> {
-			registry
-				.add(DEBUG_KEY, new WorldPreset(Map
-					.of(DimensionOptions.OVERWORLD,
-						new DimensionOptions(
-							infoLookup
-								.getRegistryInfo(RegistryKeys.DIMENSION_TYPE)
-								.get()
-								.entryLookup()
-								.getOrThrow(DimensionTypes.OVERWORLD),
-							new DebugNbtChunkGenerator(
-								infoLookup.getRegistryInfo(RegistryKeys.BIOME).get().entryLookup().getOrThrow(BiomeKeys.THE_VOID))))),
-					Lifecycle.stable());
-		});
+		LimlibRegistryHooks.hook(RegistryKeys.WORLD_PRESET, (infoLookup, registryKey, registry) -> registry
+            .add(DEBUG_KEY, new WorldPreset(Map
+                .of(DimensionOptions.OVERWORLD,
+                    new DimensionOptions(
+                        infoLookup
+                            .getRegistryInfo(RegistryKeys.DIMENSION_TYPE)
+                            .get()
+                            .entryLookup()
+                            .getOrThrow(DimensionTypes.OVERWORLD),
+                        new DebugNbtChunkGenerator(
+                            infoLookup.getRegistryInfo(RegistryKeys.BIOME).get().entryLookup().getOrThrow(BiomeKeys.THE_VOID))))),
+                RegistryEntryInfo.DEFAULT));
+
 		LimlibRegistryHooks.hook(WorldPresetTags.EXTENDED, (manager, tag, json) -> {
 			JsonObject obj = json.getAsJsonObject();
 

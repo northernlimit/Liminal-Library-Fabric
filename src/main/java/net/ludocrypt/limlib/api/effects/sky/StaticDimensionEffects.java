@@ -1,6 +1,7 @@
 package net.ludocrypt.limlib.api.effects.sky;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -16,7 +17,7 @@ import java.util.Optional;
  */
 public class StaticDimensionEffects extends LDimensionEffects {
 
-	public static final Codec<StaticDimensionEffects> CODEC = RecordCodecBuilder.create((instance) -> {
+	public static final MapCodec<StaticDimensionEffects> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
 		return instance.group(Codec.FLOAT.optionalFieldOf("cloud_height").stable().forGetter((effects) -> {
 			return effects.cloudHeight;
 		}), Codec.BOOL.fieldOf("alternate_sky_color").stable().forGetter((effects) -> {
@@ -53,7 +54,7 @@ public class StaticDimensionEffects extends LDimensionEffects {
 		this.skyShading = skyShading;
 	}
 
-	public Codec<? extends LDimensionEffects> getCodec() {
+	public MapCodec<? extends LDimensionEffects> getCodec() {
 		return CODEC;
 	}
 

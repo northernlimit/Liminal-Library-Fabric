@@ -33,8 +33,9 @@ public abstract class ClientWorldMixin extends World {
 	private void limlib$init(ClientPlayNetworkHandler netHandler, ClientWorld.Properties clientWorldProperties,
 			RegistryKey<World> registryKey, RegistryEntry<DimensionType> dimensionType, int chunkManager, int simulationDistance,
 			Supplier<Profiler> profiler, WorldRenderer worldRenderer, boolean debugWorld, long seed, CallbackInfo ci) {
+
 		LDimensionEffects.MIXIN_WORLD_LOOKUP
-			.set(this.getRegistryManager().getOptionalWrapper(LDimensionEffects.DIMENSION_EFFECTS_KEY).get());
+				.set(this.getRegistryManager().getOptionalWrapper(LDimensionEffects.DIMENSION_EFFECTS_KEY).get());
 	}
 
 }

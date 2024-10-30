@@ -1,6 +1,6 @@
 package net.ludocrypt.limlib.api.skybox;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,8 +11,8 @@ import org.joml.Matrix4f;
 
 public class EmptySkybox extends Skybox {
 
-	public static final Codec<EmptySkybox> CODEC = RecordCodecBuilder
-		.create((instance) -> instance.stable(new EmptySkybox()));
+	public static final MapCodec<EmptySkybox> CODEC = RecordCodecBuilder
+		.mapCodec((instance) -> instance.stable(new EmptySkybox()));
 
 	@Override
 	@Environment(EnvType.CLIENT)
@@ -21,7 +21,7 @@ public class EmptySkybox extends Skybox {
 	}
 
 	@Override
-	public Codec<? extends Skybox> getCodec() {
+	public MapCodec<? extends Skybox> getCodec() {
 		return CODEC;
 	}
 
