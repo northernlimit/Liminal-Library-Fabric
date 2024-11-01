@@ -24,13 +24,13 @@ public abstract class GeneratorTypesBootstrapMixin {
 	@Shadow
 	private RegistryEntry<DimensionType> overworldDimensionType;
 
-	@Inject(method = "bootstrap", at = @At("TAIL"))
+	@Shadow
+	protected abstract void register(RegistryKey<WorldPreset> key, DimensionOptions dimensionOptions);
+
+	@Inject(method = "bootstrap()V", at = @At("TAIL"))
 	public void limlib$addDimensionOpions(CallbackInfo ci) {
-		this
-			.addDimensionGenerator(DebugWorld.DEBUG_KEY, new DimensionOptions(this.overworldDimensionType,
+		this.register(DebugWorld.DEBUG_KEY, new DimensionOptions(this.overworldDimensionType,
 				new DebugNbtChunkGenerator(this.biomeLookup.getOrThrow(BiomeKeys.THE_VOID))));
 	}
-
-	abstract void addDimensionGenerator(RegistryKey<WorldPreset> generator, DimensionOptions dimension);
 
 }
