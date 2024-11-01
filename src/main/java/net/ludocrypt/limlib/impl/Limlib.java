@@ -33,6 +33,11 @@ public class Limlib {
 	}
 
 	public static void onInitialize() {
+		DynamicRegistries.registerSynced(PostEffect.POST_EFFECT_KEY, PostEffect.CODEC);
+		DynamicRegistries.registerSynced(LDimensionEffects.DIMENSION_EFFECTS_KEY, LDimensionEffects.CODEC);
+		DynamicRegistries.registerSynced(SoundEffects.SOUND_EFFECTS_KEY, SoundEffects.CODEC);
+		DynamicRegistries.registerSynced(Skybox.SKYBOX_KEY, Skybox.CODEC);
+
 		LimlibWorld.load();
 		Registry.register(ReverbEffect.REVERB_EFFECT_CODEC, new Identifier("limlib", "static"),
 				StaticReverbEffect.CODEC);
@@ -55,13 +60,6 @@ public class Limlib {
 		FabricLoader.getInstance()
 			.getEntrypoints(LimlibRegistrar.ENTRYPOINT_KEY, LimlibRegistrar.class)
 			.forEach(LimlibRegistrar::registerHooks);
-
-		//LimlibBiomes.init();
-
-		DynamicRegistries.registerSynced(PostEffect.POST_EFFECT_KEY, PostEffect.CODEC, DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY);
-		DynamicRegistries.registerSynced(LDimensionEffects.DIMENSION_EFFECTS_KEY, LDimensionEffects.CODEC, DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY);
-		DynamicRegistries.registerSynced(SoundEffects.SOUND_EFFECTS_KEY, SoundEffects.CODEC, DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY);
-		DynamicRegistries.registerSynced(Skybox.SKYBOX_KEY, Skybox.CODEC, DynamicRegistries.SyncOption.SKIP_WHEN_EMPTY);
 
 	}
 
