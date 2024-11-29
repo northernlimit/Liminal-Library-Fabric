@@ -2,7 +2,6 @@ package net.ludocrypt.limlib.impl.debug.mixin;
 
 import net.ludocrypt.limlib.impl.debug.DebugNbtChunkGenerator;
 import net.ludocrypt.limlib.impl.debug.DebugWorld;
-import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionOptionsRegistryHolder;

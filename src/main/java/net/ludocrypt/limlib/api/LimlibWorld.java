@@ -16,21 +16,12 @@ import net.minecraft.world.dimension.DimensionType;
 public class LimlibWorld {
 
 	public static final RegistryKey<Registry<LimlibWorld>> LIMLIB_WORLD_KEY = RegistryKey
-		.ofRegistry(new Identifier("limlib", "limlib_world"));
-/*
-	public static final Registry<LimlibWorld> LIMLIB_WORLD = RegistriesAccessor
-		.callCreate(LIMLIB_WORLD_KEY, registry -> new LimlibWorld(() -> null, (r) -> null));
-
- */
-
-
-
+		.ofRegistry(Identifier.of("limlib", "limlib_world"));
 
 	public static final SimpleRegistry<LimlibWorld> LIMLIB_WORLD = FabricRegistryBuilder
 			.createSimple(LIMLIB_WORLD_KEY)
 			.attribute(RegistryAttribute.SYNCED)
 			.buildAndRegister();
-
 
 
 

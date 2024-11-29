@@ -16,8 +16,7 @@ public class EmptySkybox extends Skybox {
 
 	@Override
 	@Environment(EnvType.CLIENT)
-	public void renderSky(WorldRenderer worldRenderer, MinecraftClient client, MatrixStack matrices,
-			Matrix4f projectionMatrix, float tickDelta) {
+	public void renderSky(WorldRenderer worldRenderer, MinecraftClient client, MatrixStack matrices, float tickDelta) {
 	}
 
 	@Override

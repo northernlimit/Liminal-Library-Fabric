@@ -3,10 +3,12 @@ package net.ludocrypt.limlib.impl.shader;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.ludocrypt.limlib.impl.Limlib;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
 import net.minecraft.client.gl.PostEffectProcessor;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.client.render.DefaultFramebufferSet;
+import net.minecraft.client.render.FrameGraphBuilder;
+import net.minecraft.client.util.ObjectAllocator;
 import net.minecraft.util.Identifier;
-import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 
@@ -14,29 +16,24 @@ public class PostProcesser {
 
 	private final Identifier location;
 	protected PostEffectProcessor shader;
-	private boolean loaded;
 
 	public PostProcesser(Identifier location) {
 		this.location = location;
 	}
 
-	public void init(ResourceManager resourceManager) {
-
+	public void init() {
 		try {
+			Limlib.LOGGER.info("initializing shader");
 			this.release();
-			MinecraftClient client = MinecraftClient.getInstance();
-			this.shader = parseShader(resourceManager, client, this.location);
-			this.shader.setupDimensions(client.getWindow().getFramebufferWidth(), client.getWindow().getFramebufferHeight());
+            this.shader = parseShader();
 		} catch (IOException e) {
-			this.loaded = true;
-			Limlib.LOGGER.error("Could not create screen shader {}", this.getLocation(), e);
+			Limlib.LOGGER.error("Could not create screen shader {}", this.location, e);
 		}
-
 	}
 
-	protected PostEffectProcessor parseShader(ResourceManager resourceManager, MinecraftClient mc, Identifier location)
+	protected PostEffectProcessor parseShader()
 			throws IOException {
-		return new PostEffectProcessor(mc.getTextureManager(), resourceManager, mc.getFramebuffer(), location);
+		return MinecraftClient.getInstance().getShaderLoader().loadPostEffect(this.location, DefaultFramebufferSet.MAIN_ONLY);
 	}
 
 	public void release() {
@@ -44,53 +41,39 @@ public class PostProcesser {
 		if (this.isInitialized()) {
 
 			try {
+				Limlib.LOGGER.info("releasing shader");
 				assert this.shader != null;
-				this.shader.close();
+				MinecraftClient.getInstance().getShaderLoader().close();
 				this.shader = null;
 			} catch (Exception e) {
-				throw new RuntimeException("Failed to release shader " + this.location, e);
+				throw new RuntimeException("Failed to release shader: " + this.location, e);
 			}
 
 		}
 
-		this.loaded = false;
 	}
 
-	public void render(float tickDelta) {
-		PostEffectProcessor shader = this.getShaderEffect();
-
-		if (shader != null) {
+	public void render(Framebuffer framebuffer, ObjectAllocator objectAllocator) {
+		try {
 			RenderSystem.disableBlend();
 			RenderSystem.disableDepthTest();
 			RenderSystem.resetTextureMatrix();
-			shader.render(tickDelta);
-			MinecraftClient.getInstance().getFramebuffer().beginWrite(true);
-			RenderSystem.disableBlend();
-			RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-			RenderSystem.enableDepthTest();
+
+			PostEffectProcessor shader = this.parseShader();
+			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
+
+			shader.render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, PostEffectProcessor.FramebufferSet
+					.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer)));
+
+			frameGraphBuilder.run(objectAllocator);
+		} catch (IOException e) {
+			Limlib.LOGGER.error("Failed to render post processing shader: {}", this.location);
+			e.printStackTrace();
 		}
-
-	}
-
-	public Identifier getLocation() {
-		return location;
-	}
-
-	public boolean isLoaded() {
-		return loaded;
 	}
 
 	public boolean isInitialized() {
 		return this.shader != null;
-	}
-
-	public PostEffectProcessor getShaderEffect() {
-
-		if (!this.isInitialized() && !this.isLoaded()) {
-			this.init(MinecraftClient.getInstance().getResourceManager());
-		}
-
-		return this.shader;
 	}
 
 }

@@ -32,14 +32,14 @@ public class LimlibTravelling {
 
 		if (destination.equals(teleported.getWorld())) {
 
-			BlockPos blockPos = BlockPos.ofFloored(target.position.x, target.position.y, target.position.z);
+			BlockPos blockPos = BlockPos.ofFloored(target.position().x, target.position().y, target.position().z);
 
 			if (!World.isValid(blockPos)) {
 				throw new UnsupportedOperationException("Position " + blockPos.toString() + " is out of this world!");
 			}
 
-			float f = MathHelper.wrapDegrees(target.yaw);
-			float g = MathHelper.wrapDegrees(target.pitch);
+			float f = MathHelper.wrapDegrees(target.yaw());
+			float g = MathHelper.wrapDegrees(target.pitch());
 
 			if (teleported instanceof ServerPlayerEntity) {
 				ChunkPos chunkPos = new ChunkPos(blockPos);
@@ -51,16 +51,16 @@ public class LimlibTravelling {
 				}
 
 				((ServerPlayerEntity) teleported).networkHandler
-					.requestTeleport(target.position.x, target.position.y, target.position.z, f, g, Set.of());
+					.requestTeleport(target.position().x, target.position().y, target.position().z, f, g);
 
 				teleported.setHeadYaw(f);
 			} else {
 				float h = MathHelper.clamp(g, -90.0f, 90.0f);
-				teleported.refreshPositionAndAngles(target.position.x, target.position.y, target.position.z, f, h);
+				teleported.refreshPositionAndAngles(target.position().x, target.position().y, target.position().z, f, h);
 				teleported.setHeadYaw(f);
 			}
 
-			teleported.setVelocity(target.velocity);
+			teleported.setVelocity(target.velocity());
 			teleported
 				.getWorld()
 				.playSound(null, teleported.getX(), teleported.getY(), teleported.getZ(), sound, SoundCategory.AMBIENT,
@@ -69,31 +69,20 @@ public class LimlibTravelling {
 			return teleported;
 		} else {
 
-			((Travelling) teleported).limlib$setTeleportTarget(target);
-
 			try {
 				travelingSound = sound;
 				travelingVolume = volume;
 				travelingPitch = pitch;
 
-				return (E) teleported.moveToWorld(destination);
+				return (E) teleported.teleportTo(target);
 
 			} finally {
-				((Travelling) teleported).limlib$setTeleportTarget(null);
 				travelingSound = null;
 				travelingVolume = 0.0F;
 				travelingPitch = 0.0F;
 			}
 
 		}
-
-	}
-
-	public static interface Travelling {
-
-		public TeleportTarget limlib$getTeleportTarget();
-
-		public void limlib$setTeleportTarget(TeleportTarget teleportTarget);
 
 	}
 

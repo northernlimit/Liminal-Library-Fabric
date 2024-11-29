@@ -21,22 +21,21 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.source.FixedBiomeSource;
+import net.minecraft.world.chunk.AbstractChunkHolder;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkGenerationContext;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.FullChunkConverter;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 
@@ -62,9 +61,7 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<Chunk> populateNoise(ChunkRegion chunkRegion, ChunkGenerationContext context, ChunkStatus chunkStatus,
-												  Executor executor, FullChunkConverter fullChunkConverter, List<Chunk> chunks, Chunk chunk) {
-
+	public CompletableFuture<Chunk> populateNoise(ChunkRegion chunkRegion, ChunkGenerationContext context, BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk) {
 		if (chunk.getPos().getStartPos().getX() < 0 || chunk.getPos().getStartPos().getZ() < 0) {
 			return CompletableFuture.completedFuture(chunk);
 		}
@@ -73,7 +70,7 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 
 		if (positions.isEmpty()) {
 			Map<Identifier, List<Resource>> ids = resourceManager
-				.findAllResources("structures/nbt", (id) -> id.getPath().endsWith(".nbt"));
+					.findAllResources("structures/nbt", (id) -> id.getPath().endsWith(".nbt"));
 			Map<Identifier, NbtPlacerUtil> nbts = new LinkedHashMap<>();
 
 			for (Identifier id : ids.keySet()) {
@@ -96,7 +93,7 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 				} else {
 					prevPos = positions.get(sortedNbts.get(i - 1).getKey());
 					prevSize = new BlockPos(sortedNbts.get(i - 1).getValue().sizeX, sortedNbts.get(i - 1).getValue().sizeY,
-						sortedNbts.get(i - 1).getValue().sizeZ);
+							sortedNbts.get(i - 1).getValue().sizeZ);
 				}
 
 				if (prevPos.getX() > 160) {
@@ -110,9 +107,9 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 
 				positions.put(entry.getKey(), prevPos.add(prevSize.getX() + 2, 0, 0));
 				this.nbtGroup
-					.getGroups()
-					.computeIfAbsent("debug", (s) -> Lists.newArrayList())
-					.add(entry.getKey().toString());
+						.getGroups()
+						.computeIfAbsent("debug", (s) -> Lists.newArrayList())
+						.add(entry.getKey().toString());
 			}
 
 			this.nbtGroup.fill(this.structures);
@@ -127,19 +124,19 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 					Identifier id = positions.reverseMap.get(pos.add(0, -10, 0));
 					this.generateNbt(chunkRegion, pos, id);
 					chunkRegion
-						.setBlockState(pos.add(-1, -1, -1),
-							Blocks.STRUCTURE_BLOCK.getDefaultState().with(StructureBlock.MODE, StructureBlockMode.SAVE),
-							Block.FORCE_STATE);
+							.setBlockState(pos.add(-1, -1, -1),
+									Blocks.STRUCTURE_BLOCK.getDefaultState().with(StructureBlock.MODE, StructureBlockMode.SAVE),
+									Block.FORCE_STATE);
 					BlockEntity be = chunkRegion.getBlockEntity(pos.add(-1, -1, -1));
 
 					if (be != null && be instanceof StructureBlockBlockEntity blockEntity) {
 						blockEntity
-							.setSize(new Vec3i(this.structures.eval(id, resourceManager).sizeX,
-								this.structures.eval(id, resourceManager).sizeY,
-								this.structures.eval(id, resourceManager).sizeZ));
+								.setSize(new Vec3i(this.structures.eval(id, resourceManager).sizeX,
+										this.structures.eval(id, resourceManager).sizeY,
+										this.structures.eval(id, resourceManager).sizeZ));
 						blockEntity
-							.setTemplateName(
-								id.toString().substring(0, id.toString().length() - 4).replaceFirst("structures/", ""));
+								.setTemplateName(
+										id.toString().substring(0, id.toString().length() - 4).replaceFirst("structures/", ""));
 						blockEntity.setOffset(new BlockPos(1, 1, 1));
 						blockEntity.setIgnoreEntities(false);
 					}
@@ -160,6 +157,11 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 	}
 
 	@Override
+	public void appendDebugHudText(List<String> text, NoiseConfig noiseConfig, BlockPos pos) {
+
+	}
+
+	@Override
 	protected void modifyStructure(ChunkRegion region, BlockPos pos, BlockState state, Optional<NbtCompound> blockEntityNbt,
 			int update) {
 		region.setBlockState(pos, state, update, 1);
@@ -169,19 +171,15 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 		});
 	}
 
-	@Override
-	public void getDebugHudText(List<String> list, NoiseConfig randomState, BlockPos pos) {
-	}
-
 	public static class DebugNbtGroup extends NbtGroup {
 
 		public DebugNbtGroup() {
-			super(new Identifier("debug"), Maps.newHashMap());
+			super(Identifier.of("debug"), Maps.newHashMap());
 		}
 
 		@Override
 		public Identifier nbtId(String group, String nbt) {
-			return new Identifier(nbt);
+			return Identifier.of(nbt);
 		}
 
 	}

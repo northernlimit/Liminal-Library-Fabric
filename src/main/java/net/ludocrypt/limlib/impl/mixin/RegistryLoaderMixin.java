@@ -19,20 +19,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.io.Reader;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 @SuppressWarnings({ "unchecked"})
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {
-
-	@Unique
-	private static final AtomicReference<DynamicRegistryManager.Immutable> LOADED_REGISTRY = new AtomicReference<>();
 
 
 	@Inject(method = "parseAndAdd", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Decoder;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;", shift = Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
@@ -80,13 +74,6 @@ public class RegistryLoaderMixin {
 		LimlibRegistryHooks.REGISTRY_HOOKS
 			.getOrDefault(registry.getKey(), Sets.newHashSet())
 			.forEach((registrarhook -> ((LimlibRegistryHook<E>) registrarhook).register(infoGetter, registry.getKey(), registry)));
-	}
-
-	@Inject(method = "load", at = @At("TAIL"))
-	private static void limlib$loadRegistriesIntoManager(RegistryLoader.RegistryLoadable loadable,
-														 DynamicRegistryManager registryManager, List<RegistryLoader.Entry<?>> entries,
-														 CallbackInfoReturnable<DynamicRegistryManager.Immutable> cir) {
-		LOADED_REGISTRY.set(registryManager.toImmutable());
 	}
 
 }

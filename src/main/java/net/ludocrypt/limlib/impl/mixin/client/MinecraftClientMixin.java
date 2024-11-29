@@ -6,7 +6,6 @@ import net.ludocrypt.limlib.impl.shader.PostProcesserManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.util.Window;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
@@ -30,10 +29,6 @@ public class MinecraftClientMixin {
 	@Shadow
 	public ClientWorld world;
 
-	@Final
-	@Shadow
-	private Window window;
-
 	@Shadow
 	@Final
 	private ReloadableResourceManagerImpl resourceManager;
@@ -43,7 +38,7 @@ public class MinecraftClientMixin {
 
 		if (this.player != null) {
 			Optional<SoundEffects> soundEffects = LookupGrabber
-					.snatch(world.getRegistryManager().getOptionalWrapper(SoundEffects.SOUND_EFFECTS_KEY).get(),
+					.snatch(world.getRegistryManager().getOptional(SoundEffects.SOUND_EFFECTS_KEY).get(),
 							RegistryKey.of(SoundEffects.SOUND_EFFECTS_KEY, world.getRegistryKey().getValue()));
 
 			if (soundEffects.isPresent()) {
@@ -55,12 +50,6 @@ public class MinecraftClientMixin {
 
 		}
 
-	}
-
-	@Inject(method = "onResolutionChanged", at = @At("RETURN"))
-	private void limlib$onResolutionChanged(CallbackInfo info) {
-		PostProcesserManager.INSTANCE
-			.onResolutionChanged(this.window.getFramebufferWidth(), this.window.getFramebufferHeight());
 	}
 
 	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManagerImpl;registerReloader(Lnet/minecraft/resource/ResourceReloader;)V", ordinal = 0))

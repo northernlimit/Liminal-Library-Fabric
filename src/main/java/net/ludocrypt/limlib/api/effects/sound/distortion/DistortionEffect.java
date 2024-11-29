@@ -18,7 +18,7 @@ import java.util.function.Function;
 public abstract class DistortionEffect {
 
 	public static final RegistryKey<Registry<MapCodec<? extends DistortionEffect>>> DISTORTION_EFFECT_CODEC_KEY = RegistryKey
-		.ofRegistry(new Identifier("limlib/codec/distortion_effect"));
+		.ofRegistry(Identifier.of("limlib/codec/distortion_effect"));
 	public static final Registry<MapCodec<? extends DistortionEffect>> DISTORTION_EFFECT_CODEC = RegistriesAccessor
 		.callCreate(DISTORTION_EFFECT_CODEC_KEY, (registry) -> StaticDistortionEffect.CODEC);
 	public static final Codec<DistortionEffect> CODEC = DISTORTION_EFFECT_CODEC

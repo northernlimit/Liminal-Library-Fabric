@@ -20,14 +20,14 @@ import java.util.function.Function;
 public abstract class LDimensionEffects {
 
 	public static final RegistryKey<Registry<MapCodec<? extends LDimensionEffects>>> DIMENSION_EFFECTS_CODEC_KEY = RegistryKey
-		.ofRegistry(new Identifier("limlib/codec/dimension_effects"));
+		.ofRegistry(Identifier.of("limlib/codec/dimension_effects"));
 	public static final Registry<MapCodec<? extends LDimensionEffects>> DIMENSION_EFFECTS_CODEC = RegistriesAccessor
 		.callCreate(DIMENSION_EFFECTS_CODEC_KEY, (registry) -> StaticDimensionEffects.CODEC);
 	public static final Codec<LDimensionEffects> CODEC = DIMENSION_EFFECTS_CODEC
 		.getCodec()
 		.dispatchStable(LDimensionEffects::getCodec, Function.identity());
 	public static final RegistryKey<Registry<LDimensionEffects>> DIMENSION_EFFECTS_KEY = RegistryKey
-		.ofRegistry(new Identifier("limlib/dimension_effects"));
+		.ofRegistry(Identifier.of("limlib/dimension_effects"));
 
 	public static final AtomicReference<RegistryWrapper<LDimensionEffects>> MIXIN_WORLD_LOOKUP = new AtomicReference<RegistryWrapper<LDimensionEffects>>();
 

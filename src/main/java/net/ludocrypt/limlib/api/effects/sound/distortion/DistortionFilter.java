@@ -7,7 +7,6 @@ import net.ludocrypt.limlib.api.effects.sound.SoundEffects;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.MathHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -79,7 +78,7 @@ public class DistortionFilter {
 
 		if (!(client == null || client.world == null)) {
 			Optional<SoundEffects> soundEffects = LookupGrabber
-					.snatch(client.world.getRegistryManager().getOptionalWrapper(SoundEffects.SOUND_EFFECTS_KEY).get(),
+					.snatch(client.world.getRegistryManager().getOptional(SoundEffects.SOUND_EFFECTS_KEY).get(),
 							RegistryKey.of(SoundEffects.SOUND_EFFECTS_KEY, client.world.getRegistryKey().getValue()));
 
 			if (soundEffects.isPresent()) {

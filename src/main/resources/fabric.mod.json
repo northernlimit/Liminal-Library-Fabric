@@ -9,8 +9,8 @@
 	],
 	"contact": {
 		"homepage": "https://github.com/LudoCrypt/Liminal-Library/wiki",
-		"issues": "https://github.com/LudoCrypt/Liminal-Library/issues",
-		"sources": "https://github.com/LudoCrypt/Liminal-Library"
+		"issues": "https://github.com/northernlimit/Liminal-Library-Fabric/issues",
+		"sources": "https://github.com/northernlimit/Liminal-Library-Fabric"
 	},
 	"license": "LGPLv3.0",
 	"icon": "assets/limlib/icon.png",
@@ -25,9 +25,9 @@
 		"limlib.debug.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.7",
-		"minecraft": "~1.20.6",
-		"java": ">=17",
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.3",
+		"java": ">=21",
 		"fabric-api": "*"
 	},
 	"accessWidener": "limlib.accesswidener",

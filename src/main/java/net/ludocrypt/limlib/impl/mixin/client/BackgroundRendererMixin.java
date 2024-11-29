@@ -14,12 +14,12 @@ import java.util.Optional;
 @Mixin(BackgroundRenderer.class)
 public abstract class BackgroundRendererMixin {
 
-	@ModifyVariable(method = "render", at = @At(value = "STORE", ordinal = 3), ordinal = 2)
+	@ModifyVariable(method = "getFogColor", at = @At(value = "STORE", ordinal = 3), ordinal = 2)
 	private static float limlib$modifySkyColor(float in) {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		Optional<LDimensionEffects> dimensionEffects = LookupGrabber
-				.snatch(client.world.getRegistryManager().getOptionalWrapper(LDimensionEffects.DIMENSION_EFFECTS_KEY).get(),
+				.snatch(client.world.getRegistryManager().getOptional(LDimensionEffects.DIMENSION_EFFECTS_KEY).get(),
 						RegistryKey.of(LDimensionEffects.DIMENSION_EFFECTS_KEY, client.world.getRegistryKey().getValue()));
 
         return dimensionEffects.map(LDimensionEffects::getSkyShading).orElse(in);

@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.decoration.AbstractDecorationEntity;
 import net.minecraft.nbt.*;
 import net.minecraft.registry.Registries;
@@ -61,7 +62,7 @@ public class NbtPlacerUtil {
 			palette
 				.put(i,
 					NbtHelper
-						.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), paletteCompoundList.get(i))
+						.toBlockState(Registries.BLOCK, paletteCompoundList.get(i)) //TODO
 						.rotate(manipulation.getRotation())
 						.mirror(manipulation.getMirror()));
 		}
@@ -122,7 +123,7 @@ public class NbtPlacerUtil {
 					.toList();
 
 				for (int i = 0; i < paletteCompoundList.size(); i++) {
-					palette.put(i, NbtHelper.toBlockState(Registries.BLOCK.getReadOnlyWrapper(), paletteCompoundList.get(i)));
+					palette.put(i, NbtHelper.toBlockState(Registries.BLOCK, paletteCompoundList.get(i))); //TODO
 				}
 
 				NbtList sizeList = nbt.getList("size", 3);
@@ -288,21 +289,7 @@ public class NbtPlacerUtil {
 			entity.refreshPositionAndAngles(realPosition.x, realPosition.y, realPosition.z, yawRotation, entity.getPitch());
 
 			if (entity instanceof AbstractDecorationEntity deco) {
-				double newX = realPosition.getX() - (deco.getWidthPixels() % 32 == 0 ? 0.5 : 0.0) * deco
-					.getHorizontalFacing()
-					.rotateYCounterclockwise()
-					.getOffsetX();
-				double newY = realPosition.getY() - (deco.getHeightPixels() % 32 == 0 ? 0.5 : 0.0);
-				double newZ = realPosition.getZ() - (deco.getWidthPixels() % 32 == 0 ? 0.5 : 0.0) * deco
-					.getHorizontalFacing()
-					.rotateYCounterclockwise()
-					.getOffsetZ();
-				newX += deco.getHorizontalFacing().getOffsetX() * 0.46875D;
-				newZ += deco.getHorizontalFacing().getOffsetZ() * 0.46875D;
-				newX -= 0.5;
-				newY -= 0.5;
-				newZ -= 0.5;
-				deco.setPosition(newX, newY, newZ);
+				deco.updateAttachmentPosition();
 			}
 
 			region.spawnEntity(entity);
@@ -315,7 +302,7 @@ public class NbtPlacerUtil {
 	public static Optional<Entity> getEntity(ChunkRegion region, NbtCompound nbt) {
 
 		try {
-			return EntityType.getEntityFromNbt(nbt, region.toServerWorld());
+			return EntityType.getEntityFromNbt(nbt, region.toServerWorld(), SpawnReason.CHUNK_GENERATION);
 		} catch (Exception e) {
 			return Optional.empty();
 		}

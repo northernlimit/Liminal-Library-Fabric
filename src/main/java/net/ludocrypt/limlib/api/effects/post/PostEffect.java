@@ -12,14 +12,14 @@ import java.util.function.Function;
 public abstract class PostEffect {
 
 	public static final RegistryKey<Registry<MapCodec<? extends PostEffect>>> POST_EFFECT_CODEC_KEY = RegistryKey
-		.ofRegistry(new Identifier("limlib/codec/post_effect"));
+		.ofRegistry(Identifier.of("limlib/codec/limlib_post"));
 	public static final Registry<MapCodec<? extends PostEffect>> POST_EFFECT_CODEC = RegistriesAccessor
 		.callCreate(POST_EFFECT_CODEC_KEY, (registry) -> StaticPostEffect.CODEC);
 	public static final Codec<PostEffect> CODEC = POST_EFFECT_CODEC
 		.getCodec()
 		.dispatchStable(PostEffect::getCodec, Function.identity());
 	public static final RegistryKey<Registry<PostEffect>> POST_EFFECT_KEY = RegistryKey
-		.ofRegistry(new Identifier("limlib/post_effect"));
+		.ofRegistry(Identifier.of("limlib/limlib_post"));
 
 	public abstract MapCodec<? extends PostEffect> getCodec();
 

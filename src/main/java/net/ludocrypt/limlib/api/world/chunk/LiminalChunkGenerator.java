@@ -2,26 +2,23 @@ package net.ludocrypt.limlib.api.world.chunk;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap.Type;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
+import net.minecraft.world.chunk.AbstractChunkHolder;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkGenerationContext;
-import net.minecraft.world.chunk.ChunkStatus;
-import net.minecraft.world.chunk.FullChunkConverter;
-import net.minecraft.world.gen.GenerationStep.Carver;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.Blender;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 public abstract class LiminalChunkGenerator extends ChunkGenerator {
 
@@ -30,8 +27,9 @@ public abstract class LiminalChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public void carve(ChunkRegion chunkRegion, long seed, NoiseConfig randomState, BiomeAccess biomeAccess,
-					  StructureAccessor structureManager, Chunk chunk, Carver generationStep) {
+	public void carve(ChunkRegion chunkRegion, long seed, NoiseConfig noiseConfig,
+					  BiomeAccess biomeAccess, StructureAccessor structureAccessor, Chunk chunk) {
+
 	}
 
 	@Override
@@ -43,8 +41,8 @@ public abstract class LiminalChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public CompletableFuture<Chunk> populateNoise(Executor executor, Blender blender, NoiseConfig randomState,
-			StructureAccessor structureManager, Chunk chunk) {
+	public CompletableFuture<Chunk> populateNoise(Blender blender, NoiseConfig noiseConfig,
+												  StructureAccessor structureAccessor, Chunk chunk) {
 		throw new UnsupportedOperationException("Vanilla populateNoise should never be called in LiminalChunkGenerator");
 	}
 
@@ -61,8 +59,9 @@ public abstract class LiminalChunkGenerator extends ChunkGenerator {
 	 * ChunkRegion as opposed to world when setting blocks, as it allows you to
 	 * extend through multiple chunks in {@link getPlacementRadius} away.
 	 */
-	public abstract CompletableFuture<Chunk> populateNoise(ChunkRegion chunkRegion, ChunkGenerationContext context, ChunkStatus chunkStatus, Executor executor,
-														   FullChunkConverter fullChunkConverter, List<Chunk> chunks, Chunk chunk);
+	public abstract CompletableFuture<Chunk> populateNoise(ChunkRegion chunkRegion, ChunkGenerationContext context,
+														   BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk);
+
 
 	@Override
 	public int getSeaLevel() {

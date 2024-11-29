@@ -14,7 +14,7 @@ import java.util.Optional;
 public class SoundEffects {
 
 	public static final RegistryKey<Registry<SoundEffects>> SOUND_EFFECTS_KEY = RegistryKey
-		.ofRegistry(new Identifier("limlib/sound_effects"));
+		.ofRegistry(Identifier.of("limlib/sound_effects"));
 
 	public static final Codec<SoundEffects> CODEC = RecordCodecBuilder.create((instance) -> {
 		return instance.group(ReverbEffect.CODEC.optionalFieldOf("reverb").stable().forGetter((soundEffects) -> {

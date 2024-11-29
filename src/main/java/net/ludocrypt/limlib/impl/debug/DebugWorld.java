@@ -19,7 +19,7 @@ import java.util.Map;
 public class DebugWorld implements LimlibRegistrar {
 
 	public static final RegistryKey<WorldPreset> DEBUG_KEY = RegistryKey
-		.of(RegistryKeys.WORLD_PRESET, new Identifier("limlib", "debug_nbt"));
+		.of(RegistryKeys.WORLD_PRESET, Identifier.of("limlib", "debug_nbt"));
 
 	@Override
 	public void registerHooks() {

@@ -33,7 +33,7 @@ public class StaticPostEffect extends PostEffect {
 
 	@Override
 	public Identifier getShaderLocation() {
-		return new Identifier(shaderName.getNamespace(), "shaders/post/" + shaderName.getPath() + ".json");
+		return Identifier.of(shaderName.getNamespace(), shaderName.getPath());
 	}
 
 }

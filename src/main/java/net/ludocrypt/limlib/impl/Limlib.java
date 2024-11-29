@@ -29,7 +29,7 @@ public class Limlib {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Limlib");
 	public static Identifier id(String id) {
-		return new Identifier("limlib", id);
+		return Identifier.of("limlib", id);
 	}
 
 	public static void onInitialize() {
@@ -39,27 +39,29 @@ public class Limlib {
 		DynamicRegistries.registerSynced(Skybox.SKYBOX_KEY, Skybox.CODEC);
 
 		LimlibWorld.load();
-		Registry.register(ReverbEffect.REVERB_EFFECT_CODEC, new Identifier("limlib", "static"),
+		Registry.register(ReverbEffect.REVERB_EFFECT_CODEC, Identifier.of("limlib", "static"),
 				StaticReverbEffect.CODEC);
 		Registry
-			.register(DistortionEffect.DISTORTION_EFFECT_CODEC, new Identifier("limlib", "static"),
+			.register(DistortionEffect.DISTORTION_EFFECT_CODEC, Identifier.of("limlib", "static"),
 				StaticDistortionEffect.CODEC);
 		Registry
-			.register(LDimensionEffects.DIMENSION_EFFECTS_CODEC, new Identifier("limlib", "static"),
+			.register(LDimensionEffects.DIMENSION_EFFECTS_CODEC, Identifier.of("limlib", "static"),
 				StaticDimensionEffects.CODEC);
 		Registry
-			.register(LDimensionEffects.DIMENSION_EFFECTS_CODEC, new Identifier("limlib", "empty"),
+			.register(LDimensionEffects.DIMENSION_EFFECTS_CODEC, Identifier.of("limlib", "empty"),
 				EmptyDimensionEffects.CODEC);
-		Registry.register(PostEffect.POST_EFFECT_CODEC, new Identifier("limlib", "static"), StaticPostEffect.CODEC);
-		Registry.register(PostEffect.POST_EFFECT_CODEC, new Identifier("limlib", "empty"), EmptyPostEffect.CODEC);
-		Registry.register(Skybox.SKYBOX_CODEC, new Identifier("limlib", "empty"), EmptySkybox.CODEC);
-		Registry.register(Skybox.SKYBOX_CODEC, new Identifier("limlib", "textured"), TexturedSkybox.CODEC);
+		Registry.register(PostEffect.POST_EFFECT_CODEC, Identifier.of("limlib", "static"), StaticPostEffect.CODEC);
+		Registry.register(PostEffect.POST_EFFECT_CODEC, Identifier.of("limlib", "empty"), EmptyPostEffect.CODEC);
+		Registry.register(Skybox.SKYBOX_CODEC, Identifier.of("limlib", "empty"), EmptySkybox.CODEC);
+		Registry.register(Skybox.SKYBOX_CODEC, Identifier.of("limlib", "textured"), TexturedSkybox.CODEC);
 		Registry
-			.register(Registries.CHUNK_GENERATOR, new Identifier("limlib", "debug_nbt_chunk_generator"),
-				DebugNbtChunkGenerator.CODEC);
+				.register(Registries.CHUNK_GENERATOR, Identifier.of("limlib", "debug_nbt_chunk_generator"), DebugNbtChunkGenerator.CODEC);
+
 		FabricLoader.getInstance()
 			.getEntrypoints(LimlibRegistrar.ENTRYPOINT_KEY, LimlibRegistrar.class)
 			.forEach(LimlibRegistrar::registerHooks);
+
+		//LimlibBiomes.init();
 
 	}
 

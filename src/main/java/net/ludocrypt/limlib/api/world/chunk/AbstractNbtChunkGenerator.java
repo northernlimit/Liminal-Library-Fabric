@@ -25,7 +25,7 @@ public abstract class AbstractNbtChunkGenerator extends LiminalChunkGenerator {
 	public final FunctionMap<Identifier, NbtPlacerUtil, ResourceManager> structures;
 
 	public AbstractNbtChunkGenerator(BiomeSource biomeSource, NbtGroup nbtGroup) {
-		this(biomeSource, nbtGroup, new FunctionMap<Identifier, NbtPlacerUtil, ResourceManager>(NbtPlacerUtil::load));
+		this(biomeSource, nbtGroup, new FunctionMap<>(NbtPlacerUtil::load));
 	}
 
 	public AbstractNbtChunkGenerator(BiomeSource biomeSource, NbtGroup nbtGroup,

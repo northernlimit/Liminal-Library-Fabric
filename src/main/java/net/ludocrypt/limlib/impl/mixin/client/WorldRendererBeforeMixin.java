@@ -1,45 +1,57 @@
 package net.ludocrypt.limlib.impl.mixin.client;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.ludocrypt.limlib.api.effects.LookupGrabber;
 import net.ludocrypt.limlib.api.skybox.Skybox;
 import net.ludocrypt.limlib.impl.bridge.IrisBridge;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.LightmapTextureManager;
-import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.util.profiler.Profiler;
 import org.joml.Matrix4f;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Optional;
 
 @Mixin(value = WorldRenderer.class, priority = 950)
 public abstract class WorldRendererBeforeMixin {
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;clear(IZ)V", ordinal = 0, shift = At.Shift.AFTER, remap = false))
-	private void limlib$render$clear(float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera,
-									 GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager,
-									 Matrix4f matrix4f, Matrix4f positionMatrix, CallbackInfo ci) {
+	@Shadow
+	@Final
+	private DefaultFramebufferSet framebufferSet;
 
-		if (IrisBridge.IRIS_LOADED && IrisBridge.areShadersInUse()) return;
+	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/WorldRenderer;renderMain(Lnet/minecraft/client/render/FrameGraphBuilder;Lnet/minecraft/client/render/Frustum;Lnet/minecraft/client/render/Camera;Lorg/joml/Matrix4f;Lorg/joml/Matrix4f;Lnet/minecraft/client/render/Fog;ZZLnet/minecraft/client/render/RenderTickCounter;Lnet/minecraft/util/profiler/Profiler;)V"))
+	private void limlib$render$clear(WorldRenderer instance, FrameGraphBuilder frameGraphBuilder, Frustum frustum,
+									 Camera camera, Matrix4f positionMatrix, Matrix4f projectionMatrix, Fog fog,
+									 boolean renderBlockOutline, boolean bl3, RenderTickCounter tickCounter,
+									 Profiler profiler, Operation<Void> original) {
 
-		MinecraftClient client = MinecraftClient.getInstance();
+		if (!IrisBridge.IRIS_LOADED && !IrisBridge.areShadersInUse()) {
 
-		Optional<Skybox> sky = LookupGrabber
-				.snatch(client.world.getRegistryManager().getOptionalWrapper(Skybox.SKYBOX_KEY).get(),
-						RegistryKey.of(Skybox.SKYBOX_KEY, client.world.getRegistryKey().getValue()));
+			MinecraftClient client = MinecraftClient.getInstance();
 
-		if (sky.isPresent()) {
-			MatrixStack matrixStack = new MatrixStack();
-			matrixStack.multiplyPositionMatrix(matrix4f);
-			sky.get().renderSky(((WorldRenderer) (Object) this), client, matrixStack, positionMatrix, tickDelta);
+			Optional<Skybox> sky = LookupGrabber
+					.snatch(client.world.getRegistryManager().getOptional(Skybox.SKYBOX_KEY).get(),
+							RegistryKey.of(Skybox.SKYBOX_KEY, client.world.getRegistryKey().getValue()));
+
+			if (sky.isPresent()) {
+				RenderPass renderPass = frameGraphBuilder.createPass("skybox_pass");
+				this.framebufferSet.mainFramebuffer = renderPass.transfer(this.framebufferSet.mainFramebuffer);
+				renderPass.setRenderer(() -> {
+					RenderPhase.MAIN_TARGET.startDrawing();
+					MatrixStack matrixStack = new MatrixStack();
+					sky.get().renderSky(((WorldRenderer) (Object) this), client, matrixStack, tickCounter.getTickDelta(true));
+
+				});
+			}
 		}
 
+		original.call(instance, frameGraphBuilder, frustum, camera, positionMatrix, projectionMatrix, fog, renderBlockOutline, bl3, tickCounter, profiler);
 	}
 
 }

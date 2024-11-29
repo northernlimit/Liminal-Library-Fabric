@@ -17,7 +17,7 @@ import java.util.function.Function;
 public abstract class ReverbEffect {
 
 	public static final RegistryKey<Registry<MapCodec<? extends ReverbEffect>>> REVERB_EFFECT_CODEC_KEY = RegistryKey
-		.ofRegistry(new Identifier("limlib/codec/reverb_effect"));
+		.ofRegistry(Identifier.of("limlib/codec/reverb_effect"));
 	public static final Registry<MapCodec<? extends ReverbEffect>> REVERB_EFFECT_CODEC = RegistriesAccessor
 		.callCreate(REVERB_EFFECT_CODEC_KEY, (registry) -> StaticReverbEffect.CODEC);
 	public static final Codec<ReverbEffect> CODEC = REVERB_EFFECT_CODEC

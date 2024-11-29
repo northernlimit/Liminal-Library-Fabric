@@ -18,16 +18,15 @@ import java.util.function.Function;
 public abstract class Skybox {
 
 	public static final RegistryKey<Registry<MapCodec<? extends Skybox>>> SKYBOX_CODEC_KEY = RegistryKey
-		.ofRegistry(new Identifier("limlib/codec/skybox"));
+		.ofRegistry(Identifier.of("limlib/codec/skybox"));
 	public static final Registry<MapCodec<? extends Skybox>> SKYBOX_CODEC = RegistriesAccessor
 		.callCreate(SKYBOX_CODEC_KEY, (registry) -> TexturedSkybox.CODEC);
 	public static final Codec<Skybox> CODEC = SKYBOX_CODEC.getCodec().dispatchStable(Skybox::getCodec, Function.identity());
-	public static final RegistryKey<Registry<Skybox>> SKYBOX_KEY = RegistryKey.ofRegistry(new Identifier("limlib/skybox"));
+	public static final RegistryKey<Registry<Skybox>> SKYBOX_KEY = RegistryKey.ofRegistry(Identifier.of("limlib/skybox"));
 
 	public abstract MapCodec<? extends Skybox> getCodec();
 
 	@Environment(EnvType.CLIENT)
-	public abstract void renderSky(WorldRenderer worldRenderer, MinecraftClient client, MatrixStack matrices,
-			Matrix4f projectionMatrix, float tickDelta);
+	public abstract void renderSky(WorldRenderer worldRenderer, MinecraftClient client, MatrixStack matrices, float tickDelta);
 
 }

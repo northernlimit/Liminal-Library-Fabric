@@ -117,7 +117,7 @@ public class ReverbFilter {
 
 		if (!(client == null || client.world == null)) {
 			Optional<SoundEffects> soundEffects = LookupGrabber
-					.snatch(client.world.getRegistryManager().getOptionalWrapper(SoundEffects.SOUND_EFFECTS_KEY).get(),
+					.snatch(client.world.getRegistryManager().getOptional(SoundEffects.SOUND_EFFECTS_KEY).get(),
 							RegistryKey.of(SoundEffects.SOUND_EFFECTS_KEY, client.world.getRegistryKey().getValue()));
 
 			if (soundEffects.isPresent()) {
