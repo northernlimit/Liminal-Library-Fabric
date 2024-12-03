@@ -14,14 +14,17 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(ChunkGenerating.class)
 public class ChunkGeneratingMixin {
 
+
 	@Inject(method = "populateNoise", at = @At("HEAD"), cancellable = true)
 	private static void limlib$liminalChunkGenerator(ChunkGenerationContext context, ChunkGenerationStep step,
 													 BoundedRegionArray<AbstractChunkHolder> chunks, Chunk chunk,
 													 CallbackInfoReturnable<CompletableFuture<Chunk>> ci) {
 		if (context.generator() instanceof LiminalChunkGenerator limChunkGen) {
+			step = new ChunkGenerationStep(step.targetStatus(), step.directDependencies(),
+					step.accumulatedDependencies(), limChunkGen.getPlacementRadius(), step.task());
+
 			ChunkRegion chunkRegion = new ChunkRegion(context.world(), chunks, step, chunk);
-			ci
-					.setReturnValue(limChunkGen
+			ci.setReturnValue(limChunkGen
 							.populateNoise(chunkRegion, context, chunks, chunk)
 							.thenApply(populated -> {
 
@@ -34,11 +37,8 @@ public class ChunkGeneratingMixin {
 										if (belowZeroRetrogen.hasMissingBedrock()) {
 											belowZeroRetrogen.fillColumnsWithAirIfMissingBedrock(protoChunk);
 										}
-
 									}
-
 								}
-
 								return populated;
 							}));
 		}

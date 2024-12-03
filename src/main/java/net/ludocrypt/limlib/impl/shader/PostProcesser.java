@@ -23,7 +23,6 @@ public class PostProcesser {
 
 	public void init() {
 		try {
-			Limlib.LOGGER.info("initializing shader");
 			this.release();
             this.shader = parseShader();
 		} catch (IOException e) {
@@ -41,7 +40,6 @@ public class PostProcesser {
 		if (this.isInitialized()) {
 
 			try {
-				Limlib.LOGGER.info("releasing shader");
 				assert this.shader != null;
 				MinecraftClient.getInstance().getShaderLoader().close();
 				this.shader = null;
@@ -76,4 +74,11 @@ public class PostProcesser {
 		return this.shader != null;
 	}
 
+	public PostEffectProcessor getShader() {
+		return shader;
+	}
+
+	public void setUniform(String name, float value) {
+		shader.setUniforms(name, value);
+	}
 }

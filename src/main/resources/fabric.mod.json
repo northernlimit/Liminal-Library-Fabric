@@ -17,7 +17,7 @@
 	"environment": "*",
 	"entrypoints": {
 		"limlib:registrar": [
-			"net.ludocrypt.limlib.impl.debug.DebugWorld"
+
 		]
 	},
 	"mixins": [

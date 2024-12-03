@@ -4,9 +4,6 @@
 	"package": "net.ludocrypt.limlib.impl.debug.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"GeneratorTypesMixin",
-		"GeneratorTypesBootstrapMixin",
-		"WorldPresetTagProviderMixin",
 		"WorldDimensionsMixin"
 	],
 	"injectors": {
