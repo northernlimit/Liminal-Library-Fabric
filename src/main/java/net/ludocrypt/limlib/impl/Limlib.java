@@ -7,7 +7,7 @@ import net.ludocrypt.limlib.api.LimlibWorld;
 import net.ludocrypt.limlib.api.effects.post.EmptyPostEffect;
 import net.ludocrypt.limlib.api.effects.post.PostEffect;
 import net.ludocrypt.limlib.api.effects.post.StaticPostEffect;
-import net.ludocrypt.limlib.api.effects.sky.LDimensionEffects;
+import net.ludocrypt.limlib.api.effects.sky.LiminalDimensionEffects;
 import net.ludocrypt.limlib.api.effects.sky.EmptyDimensionEffects;
 import net.ludocrypt.limlib.api.effects.sky.StaticDimensionEffects;
 import net.ludocrypt.limlib.api.effects.sound.SoundEffects;
@@ -28,13 +28,10 @@ import org.slf4j.LoggerFactory;
 public class Limlib {
 
 	public static final Logger LOGGER = LoggerFactory.getLogger("Limlib");
-	public static Identifier id(String id) {
-		return Identifier.of("limlib", id);
-	}
 
 	public static void onInitialize() {
 		DynamicRegistries.registerSynced(PostEffect.POST_EFFECT_KEY, PostEffect.CODEC);
-		DynamicRegistries.registerSynced(LDimensionEffects.DIMENSION_EFFECTS_KEY, LDimensionEffects.CODEC);
+		DynamicRegistries.registerSynced(LiminalDimensionEffects.DIMENSION_EFFECTS_KEY, LiminalDimensionEffects.CODEC);
 		DynamicRegistries.registerSynced(SoundEffects.SOUND_EFFECTS_KEY, SoundEffects.CODEC);
 		DynamicRegistries.registerSynced(Skybox.SKYBOX_KEY, Skybox.CODEC);
 
@@ -45,10 +42,10 @@ public class Limlib {
 			.register(DistortionEffect.DISTORTION_EFFECT_CODEC, Identifier.of("limlib", "static"),
 				StaticDistortionEffect.CODEC);
 		Registry
-			.register(LDimensionEffects.DIMENSION_EFFECTS_CODEC, Identifier.of("limlib", "static"),
+			.register(LiminalDimensionEffects.DIMENSION_EFFECTS_CODEC, Identifier.of("limlib", "static"),
 				StaticDimensionEffects.CODEC);
 		Registry
-			.register(LDimensionEffects.DIMENSION_EFFECTS_CODEC, Identifier.of("limlib", "empty"),
+			.register(LiminalDimensionEffects.DIMENSION_EFFECTS_CODEC, Identifier.of("limlib", "empty"),
 				EmptyDimensionEffects.CODEC);
 		Registry.register(PostEffect.POST_EFFECT_CODEC, Identifier.of("limlib", "static"), StaticPostEffect.CODEC);
 		Registry.register(PostEffect.POST_EFFECT_CODEC, Identifier.of("limlib", "empty"), EmptyPostEffect.CODEC);
@@ -60,8 +57,6 @@ public class Limlib {
 		FabricLoader.getInstance()
 			.getEntrypoints(LimlibRegistrar.ENTRYPOINT_KEY, LimlibRegistrar.class)
 			.forEach(LimlibRegistrar::registerHooks);
-
-		//LimlibBiomes.init();
 
 	}
 

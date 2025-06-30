@@ -16,9 +16,9 @@ public class DepthFirstMaze extends DepthLikeMaze {
 
 	@Override
 	public void create() {
-		visit(new Vec2i(0, 0));
+		visit(Vec2i.ZERO);
 		this.visitedCells++;
-		this.stack.push(new Vec2i(0, 0));
+		this.stack.push(Vec2i.ZERO);
 
 		while (visitedCells < this.width * this.height) {
 			List<Face> neighbours = Lists.newArrayList();

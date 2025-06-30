@@ -6,7 +6,7 @@ import java.util.Stack;
 
 public abstract class DepthLikeMaze extends MazeComponent {
 
-	public Stack<Vec2i> stack = new Stack<Vec2i>();
+	public Stack<Vec2i> stack = new Stack<>();
 
 	public int visitedCells = 0;
 
@@ -56,9 +56,7 @@ public abstract class DepthLikeMaze extends MazeComponent {
 	}
 
 	public boolean visited(Vec2i vec) {
-		return cellState(vec).getExtra().containsKey("visited")
-				? cellState(vec).getExtra().get("visited").getBoolean("visited")
-				: false;
+		return cellState(vec).getExtra().containsKey("visited") && cellState(vec).getExtra().get("visited").getBoolean("visited");
 	}
 
 }

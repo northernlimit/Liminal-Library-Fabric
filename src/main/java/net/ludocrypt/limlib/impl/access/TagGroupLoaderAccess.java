@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface TagGroupLoaderAccess<O> {
 
-	public Optional<RegistryKey<? extends Registry<O>>> getRegistryKey();
+	Optional<RegistryKey<? extends Registry<O>>> getRegistryKey();
 
-	public void setRegistryKey(@Nullable RegistryKey<? extends Registry<O>> key);
+	void setRegistryKey(@Nullable RegistryKey<? extends Registry<O>> key);
 
 }

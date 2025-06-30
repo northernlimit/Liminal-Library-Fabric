@@ -15,11 +15,6 @@
 	"license": "LGPLv3.0",
 	"icon": "assets/limlib/icon.png",
 	"environment": "*",
-	"entrypoints": {
-		"limlib:registrar": [
-
-		]
-	},
 	"mixins": [
 		"limlib.mixins.json",
 		"limlib.debug.mixins.json"

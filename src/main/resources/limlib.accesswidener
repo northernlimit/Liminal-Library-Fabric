@@ -2,4 +2,4 @@ accessWidener v2 named
 accessible method net/minecraft/block/entity/BlockEntity readNbt (Lnet/minecraft/nbt/NbtCompound;Lnet/minecraft/registry/RegistryWrapper$WrapperLookup;)V
 accessible class net/minecraft/registry/RegistryLoader$RegistryLoadable
 accessible class net/minecraft/registry/Registries$Initializer
-accessible method net/minecraft/entity/decoration/AbstractDecorationEntity updateAttachmentPosition ()V
+accessible method net/minecraft/entity/decoration/AbstractDecorationEntity setFacing (Lnet/minecraft/util/math/Direction;)V

@@ -5,7 +5,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
-import net.minecraft.entity.decoration.AbstractDecorationEntity;
+import net.minecraft.entity.decoration.painting.PaintingEntity;
+import net.minecraft.entity.decoration.painting.PaintingVariant;
 import net.minecraft.nbt.*;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.Resource;
@@ -51,7 +52,7 @@ public class NbtPlacerUtil {
 
 	public NbtPlacerUtil manipulate(Manipulation manipulation) {
 		NbtList paletteList = storedNbt.getList("palette", 10);
-		HashMap<Integer, BlockState> palette = new HashMap<Integer, BlockState>(paletteList.size());
+		HashMap<Integer, BlockState> palette = new HashMap<>(paletteList.size());
 		List<NbtCompound> paletteCompoundList = paletteList
 			.stream()
 			.filter(nbtElement -> nbtElement instanceof NbtCompound)
@@ -62,7 +63,7 @@ public class NbtPlacerUtil {
 			palette
 				.put(i,
 					NbtHelper
-						.toBlockState(Registries.BLOCK, paletteCompoundList.get(i)) //TODO
+						.toBlockState(Registries.BLOCK, paletteCompoundList.get(i))
 						.rotate(manipulation.getRotation())
 						.mirror(manipulation.getMirror()));
 		}
@@ -115,7 +116,7 @@ public class NbtPlacerUtil {
 			if (nbtOptional.isPresent()) {
 				NbtCompound nbt = nbtOptional.get();
 				NbtList paletteList = nbt.getList("palette", 10);
-				HashMap<Integer, BlockState> palette = new HashMap<Integer, BlockState>(paletteList.size());
+				HashMap<Integer, BlockState> palette = new HashMap<>(paletteList.size());
 				List<NbtCompound> paletteCompoundList = paletteList
 					.stream()
 					.filter(nbtElement -> nbtElement instanceof NbtCompound)
@@ -123,7 +124,7 @@ public class NbtPlacerUtil {
 					.toList();
 
 				for (int i = 0; i < paletteCompoundList.size(); i++) {
-					palette.put(i, NbtHelper.toBlockState(Registries.BLOCK, paletteCompoundList.get(i))); //TODO
+					palette.put(i, NbtHelper.toBlockState(Registries.BLOCK, paletteCompoundList.get(i)));
 				}
 
 				NbtList sizeList = nbt.getList("size", 3);
@@ -131,8 +132,8 @@ public class NbtPlacerUtil {
 				BlockPos sizeVector = new BlockPos(Math.abs(sizeVectorRotated.getX()), Math.abs(sizeVectorRotated.getY()),
 					Math.abs(sizeVectorRotated.getZ()));
 				NbtList positionsList = nbt.getList("blocks", 10);
-				HashMap<BlockPos, Pair<BlockState, Optional<NbtCompound>>> positions = new HashMap<BlockPos, Pair<BlockState, Optional<NbtCompound>>>(
-					positionsList.size());
+				HashMap<BlockPos, Pair<BlockState, Optional<NbtCompound>>> positions = new HashMap<>(
+                        positionsList.size());
 				List<Pair<BlockPos, Pair<BlockState, Optional<NbtCompound>>>> positionsPairList = positionsList
 					.stream()
 					.filter(nbtElement -> nbtElement instanceof NbtCompound)
@@ -232,20 +233,19 @@ public class NbtPlacerUtil {
 		return this;
 	}
 
-	public NbtPlacerUtil spawnEntity(NbtElement nbtElement, ChunkRegion region, BlockPos offset, BlockPos from, BlockPos to,
-			Manipulation manipulation) {
+	public NbtPlacerUtil spawnEntity(NbtElement nbtElement, ChunkRegion region, BlockPos offset,
+									 BlockPos from, BlockPos to, Manipulation manipulation) {
 		NbtCompound entityCompound = (NbtCompound) nbtElement;
 		NbtList nbtPos = entityCompound.getList("pos", 6);
-		Vec3d relativeLocation = mirror(
-			rotate(new Vec3d(nbtPos.getDouble(0), nbtPos.getDouble(1), nbtPos.getDouble(2)), manipulation.getRotation()),
-			manipulation.getMirror()).subtract(Vec3d.of(lowestPos));
+		Vec3d relativeLocation = mirror(rotate(new Vec3d(
+				nbtPos.getDouble(0), nbtPos.getDouble(1), nbtPos.getDouble(2)),
+						manipulation.getRotation()), manipulation.getMirror()).subtract(Vec3d.of(lowestPos));
 		Vec3d realPosition = relativeLocation.add(Vec3d.of(from.subtract(offset)));
-		BlockPos min = offset;
-		BlockPos max = to.subtract(from).add(offset);
+        BlockPos max = to.subtract(from).add(offset);
 
-		if (!((relativeLocation.getX() < max.getX() && relativeLocation.getX() >= min.getX()) && (relativeLocation
-			.getY() < max.getY() && relativeLocation
-				.getY() >= min.getY()) && (relativeLocation.getZ() < max.getZ() && relativeLocation.getZ() >= min.getZ()))) {
+		if (!((relativeLocation.getX() < max.getX() && relativeLocation.getX() >= offset.getX()) && (relativeLocation
+				.getY() < max.getY() && relativeLocation
+				.getY() >= offset.getY()) && (relativeLocation.getZ() < max.getZ() && relativeLocation.getZ() >= offset.getZ()))) {
 			return this;
 		}
 
@@ -260,17 +260,23 @@ public class NbtPlacerUtil {
 		NbtList rotationList = new NbtList();
 		NbtList entityRotationList = nbt.getList("Rotation", 5);
 		float yawRotation = applyMirror(applyRotation(entityRotationList.getFloat(0), manipulation.getRotation()),
-			manipulation.getMirror());
+				manipulation.getMirror());
 		rotationList.add(NbtFloat.of(yawRotation));
 		rotationList.add(NbtFloat.of(entityRotationList.getFloat(1)));
 		nbt.remove("Rotation");
 		nbt.put("Rotation", rotationList);
 
 		if (nbt.contains("facing")) {
-			Direction dir = mirror(manipulation.getRotation().rotate(Direction.fromHorizontal(nbt.getByte("facing"))),
-				manipulation.getMirror());
+			Direction dir = mirror(manipulation.getRotation().rotate(Direction
+					.fromHorizontal(nbt.getByte("facing"))), manipulation.getMirror());
 			nbt.remove("facing");
 			nbt.putByte("facing", (byte) dir.getHorizontal());
+		}
+		if (nbt.contains("Facing")) {
+			Direction dir = mirror(manipulation.getRotation().rotate(Direction
+					.byId(nbt.getByte("Facing"))), manipulation.getMirror());
+			nbt.remove("Facing");
+			nbt.putByte("Facing", (byte) dir.getId());
 		}
 
 		if (nbt.contains("TileX", 3) && nbt.contains("TileY", 3) && nbt.contains("TileZ", 3)) {
@@ -288,8 +294,21 @@ public class NbtPlacerUtil {
 			Entity entity = optionalEntity.get();
 			entity.refreshPositionAndAngles(realPosition.x, realPosition.y, realPosition.z, yawRotation, entity.getPitch());
 
-			if (entity instanceof AbstractDecorationEntity deco) {
-				deco.updateAttachmentPosition();
+			if (entity instanceof PaintingEntity painting) {
+				BlockPos.Mutable pos = new BlockPos.Mutable();
+				pos.set(painting.getAttachedBlockPos());
+				PaintingVariant variant = painting.getVariant().value();
+
+				if (variant.height() % 2 == 0) {
+					pos.move(0, -1, 0);
+				}
+
+				Direction direction = painting.getFacing();
+				if (variant.width() % 2 == 0 && (direction == Direction.WEST || direction == Direction.SOUTH)) {
+					pos.move(direction.rotateYClockwise().getVector());
+				}
+
+				painting.setPosition(pos.toCenterPos());
 			}
 
 			region.spawnEntity(entity);
@@ -311,61 +330,43 @@ public class NbtPlacerUtil {
 
 	public static Vec3d rotate(Vec3d in, BlockRotation rotation) {
 
-		switch (rotation) {
-			case NONE:
-			default:
-				return in;
-			case CLOCKWISE_90:
-				return new Vec3d(-in.getZ(), in.getY(), in.getX());
-			case CLOCKWISE_180:
-				return new Vec3d(-in.getX(), in.getY(), -in.getZ());
-			case COUNTERCLOCKWISE_90:
-				return new Vec3d(in.getZ(), in.getY(), -in.getX());
-		}
+        return switch (rotation) {
+			case NONE -> in;
+            case CLOCKWISE_90 -> new Vec3d(-in.getZ(), in.getY(), in.getX());
+            case CLOCKWISE_180 -> new Vec3d(-in.getX(), in.getY(), -in.getZ());
+            case COUNTERCLOCKWISE_90 -> new Vec3d(in.getZ(), in.getY(), -in.getX());
+        };
 
 	}
 
 	public static Vec3d mirror(Vec3d in, BlockMirror mirror) {
 
-		switch (mirror) {
-			case NONE:
-			default:
-				return in;
-			case LEFT_RIGHT:
-				return new Vec3d(in.getX(), in.getY(), -in.getZ());
-			case FRONT_BACK:
-				return new Vec3d(-in.getX(), in.getY(), in.getZ());
-		}
+        return switch (mirror) {
+            case NONE -> in;
+            case LEFT_RIGHT -> new Vec3d(in.getX(), in.getY(), -in.getZ());
+            case FRONT_BACK -> new Vec3d(-in.getX(), in.getY(), in.getZ());
+        };
 
 	}
 
 	public static BlockPos rotate(BlockPos in, BlockRotation rotation) {
 
-		switch (rotation) {
-			case NONE:
-			default:
-				return in;
-			case CLOCKWISE_90:
-				return new BlockPos(-in.getZ(), in.getY(), in.getX());
-			case CLOCKWISE_180:
-				return new BlockPos(-in.getX(), in.getY(), -in.getZ());
-			case COUNTERCLOCKWISE_90:
-				return new BlockPos(in.getZ(), in.getY(), -in.getX());
-		}
+        return switch (rotation) {
+            case NONE -> in;
+            case CLOCKWISE_90 -> new BlockPos(-in.getZ(), in.getY(), in.getX());
+            case CLOCKWISE_180 -> new BlockPos(-in.getX(), in.getY(), -in.getZ());
+            case COUNTERCLOCKWISE_90 -> new BlockPos(in.getZ(), in.getY(), -in.getX());
+        };
 
 	}
 
 	public static BlockPos mirror(BlockPos in, BlockMirror mirror) {
 
-		switch (mirror) {
-			case NONE:
-			default:
-				return in;
-			case LEFT_RIGHT:
-				return new BlockPos(in.getX(), in.getY(), -in.getZ());
-			case FRONT_BACK:
-				return new BlockPos(-in.getX(), in.getY(), in.getZ());
-		}
+        return switch (mirror) {
+            case NONE -> in;
+            case LEFT_RIGHT -> new BlockPos(in.getX(), in.getY(), -in.getZ());
+            case FRONT_BACK -> new BlockPos(-in.getX(), in.getY(), in.getZ());
+        };
 
 	}
 
@@ -408,30 +409,23 @@ public class NbtPlacerUtil {
 	public float applyRotation(float in, BlockRotation rotation) {
 		float f = MathHelper.wrapDegrees(in);
 
-		switch (rotation) {
-			case CLOCKWISE_180:
-				return f + 180.0F;
-			case COUNTERCLOCKWISE_90:
-				return f + 270.0F;
-			case CLOCKWISE_90:
-				return f + 90.0F;
-			default:
-				return f;
-		}
+        return switch (rotation) {
+            case CLOCKWISE_180 -> f + 180.0F;
+            case COUNTERCLOCKWISE_90 -> f + 270.0F;
+            case CLOCKWISE_90 -> f + 90.0F;
+            default -> f;
+        };
 
 	}
 
 	public float applyMirror(float in, BlockMirror mirror) {
 		float f = MathHelper.wrapDegrees(in);
 
-		switch (mirror) {
-			case LEFT_RIGHT:
-				return 180.0F - f;
-			case FRONT_BACK:
-				return -f;
-			default:
-				return f;
-		}
+        return switch (mirror) {
+            case LEFT_RIGHT -> 180.0F - f;
+            case FRONT_BACK -> -f;
+            default -> f;
+        };
 
 	}
 
@@ -441,12 +435,10 @@ public class NbtPlacerUtil {
 
 	public static NbtList createNbtIntList(int... ints) {
 		NbtList nbtList = new NbtList();
-		int size = ints.length;
 
-		for (int j = 0; j < size; ++j) {
-			int i = ints[j];
-			nbtList.add(NbtInt.of(i));
-		}
+        for (int i : ints) {
+            nbtList.add(NbtInt.of(i));
+        }
 
 		return nbtList;
 	}

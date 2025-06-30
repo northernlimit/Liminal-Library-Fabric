@@ -1,7 +1,7 @@
 package net.ludocrypt.limlib.impl.mixin.client;
 
 import net.ludocrypt.limlib.api.effects.LookupGrabber;
-import net.ludocrypt.limlib.api.effects.sky.LDimensionEffects;
+import net.ludocrypt.limlib.api.effects.sky.LiminalDimensionEffects;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BackgroundRenderer;
 import net.minecraft.registry.RegistryKey;
@@ -18,11 +18,11 @@ public abstract class BackgroundRendererMixin {
 	private static float limlib$modifySkyColor(float in) {
 		MinecraftClient client = MinecraftClient.getInstance();
 
-		Optional<LDimensionEffects> dimensionEffects = LookupGrabber
-				.snatch(client.world.getRegistryManager().getOptional(LDimensionEffects.DIMENSION_EFFECTS_KEY).get(),
-						RegistryKey.of(LDimensionEffects.DIMENSION_EFFECTS_KEY, client.world.getRegistryKey().getValue()));
+		Optional<LiminalDimensionEffects> dimensionEffects = LookupGrabber
+				.snatch(client.world.getRegistryManager().getOptional(LiminalDimensionEffects.DIMENSION_EFFECTS_KEY).get(),
+						RegistryKey.of(LiminalDimensionEffects.DIMENSION_EFFECTS_KEY, client.world.getRegistryKey().getValue()));
 
-        return dimensionEffects.map(LDimensionEffects::getSkyShading).orElse(in);
+        return dimensionEffects.map(LiminalDimensionEffects::getSkyShading).orElse(in);
 
     }
 }

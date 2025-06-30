@@ -17,21 +17,21 @@ import java.util.function.Function;
 /**
  * A non-client-side clone of {@link DimensionEffects}
  */
-public abstract class LDimensionEffects {
+public abstract class LiminalDimensionEffects {
 
-	public static final RegistryKey<Registry<MapCodec<? extends LDimensionEffects>>> DIMENSION_EFFECTS_CODEC_KEY = RegistryKey
+	public static final RegistryKey<Registry<MapCodec<? extends LiminalDimensionEffects>>> DIMENSION_EFFECTS_CODEC_KEY = RegistryKey
 		.ofRegistry(Identifier.of("limlib/codec/dimension_effects"));
-	public static final Registry<MapCodec<? extends LDimensionEffects>> DIMENSION_EFFECTS_CODEC = RegistriesAccessor
+	public static final Registry<MapCodec<? extends LiminalDimensionEffects>> DIMENSION_EFFECTS_CODEC = RegistriesAccessor
 		.callCreate(DIMENSION_EFFECTS_CODEC_KEY, (registry) -> StaticDimensionEffects.CODEC);
-	public static final Codec<LDimensionEffects> CODEC = DIMENSION_EFFECTS_CODEC
+	public static final Codec<LiminalDimensionEffects> CODEC = DIMENSION_EFFECTS_CODEC
 		.getCodec()
-		.dispatchStable(LDimensionEffects::getCodec, Function.identity());
-	public static final RegistryKey<Registry<LDimensionEffects>> DIMENSION_EFFECTS_KEY = RegistryKey
+		.dispatchStable(LiminalDimensionEffects::getCodec, Function.identity());
+	public static final RegistryKey<Registry<LiminalDimensionEffects>> DIMENSION_EFFECTS_KEY = RegistryKey
 		.ofRegistry(Identifier.of("limlib/dimension_effects"));
 
-	public static final AtomicReference<RegistryWrapper<LDimensionEffects>> MIXIN_WORLD_LOOKUP = new AtomicReference<RegistryWrapper<LDimensionEffects>>();
+	public static final AtomicReference<RegistryWrapper<LiminalDimensionEffects>> MIXIN_WORLD_LOOKUP = new AtomicReference<>();
 
-	public abstract MapCodec<? extends LDimensionEffects> getCodec();
+	public abstract MapCodec<? extends LiminalDimensionEffects> getCodec();
 
 	@Environment(EnvType.CLIENT)
 	public abstract DimensionEffects getDimensionEffects();

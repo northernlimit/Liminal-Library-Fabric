@@ -16,7 +16,7 @@ public enum MazePiece {
 
 	final String asLetter;
 
-	private MazePiece(String asLetter) {
+	MazePiece(String asLetter) {
 		this.asLetter = asLetter;
 	}
 
@@ -27,9 +27,7 @@ public enum MazePiece {
 	/**
 	 * Returns a Pair containing the state's maze piece and a randomly selected
 	 * manipulation.
-	 * 
 	 * Note: This method assumes a default orientation of each maze piece.
-	 * 
 	 * T is assumed to go up, left, down, right. F is assumed to go up, left, down.
 	 * L is assumed to go up, left. I is assumed to go up, down. N is assumed to go
 	 * up.

@@ -26,7 +26,7 @@ public abstract class WorldRendererAfterMixin {
 
 		if (IrisBridge.IRIS_LOADED) {
 
-			if (IrisBridge.areShadersInUse()) {
+			if (!IrisBridge.areShadersInUse()) {
 				MinecraftClient client = MinecraftClient.getInstance();
 
 				Optional<Skybox> sky = LookupGrabber

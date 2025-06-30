@@ -31,7 +31,7 @@ public class NbtGroup {
 
 	public Identifier nbtId(String group, String nbt) {
 		return Identifier.of(this.id.getNamespace(),
-			"structures/nbt/" + this.id.getPath() + "/" + group + "/" + nbt + ".nbt");
+			"structure/nbt/" + this.id.getPath() + "/" + group + "/" + nbt + ".nbt");
 	}
 
 	public Identifier pick(String key, Random random) {

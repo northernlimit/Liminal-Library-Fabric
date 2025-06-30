@@ -43,7 +43,6 @@ public class GameRendererMixin implements GameRendererAccessor {
 
 			if (postEffect.shouldRender()) {
 				postEffect.beforeRender();
-				//memoizedShaders.apply(postEffect.getShaderLocation()).render(client.getFramebuffer(), this.pool);
 				PostProcesserManager.INSTANCE.find(postEffect.getShaderLocation()).render(client.getFramebuffer(), this.pool);
 			}
 

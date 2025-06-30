@@ -10,8 +10,40 @@ base {
 	archivesName = project.archives_base_name
 }
 
+sourceSets {
+	testmod {
+		compileClasspath += main.compileClasspath
+		runtimeClasspath += main.runtimeClasspath
+		compileClasspath += main.output
+		runtimeClasspath += main.output
+	}
+}
+
 loom {
 	accessWidenerPath = file("src/main/resources/limlib.accesswidener")
+	mods {
+		"limlib" {
+			sourceSet sourceSets.main
+			sourceSet sourceSets.test
+		}
+		"limlib-testmod" {
+			sourceSet sourceSets.testmod
+		}
+	}
+	runs {
+		testmodClient {
+			client()
+			ideConfigGenerated = true
+			name = "Testmod Client"
+			source sourceSets.testmod
+		}
+		testmodServer {
+			server()
+			ideConfigGenerated = true
+			name = "Testmod Server"
+			source sourceSets.testmod
+		}
+	}
 }
 
 repositories {

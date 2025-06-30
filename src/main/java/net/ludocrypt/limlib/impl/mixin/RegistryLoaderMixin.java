@@ -3,6 +3,7 @@ package net.ludocrypt.limlib.impl.mixin;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.serialization.Decoder;
 import net.ludocrypt.limlib.api.LimlibRegistryHooks;
 import net.ludocrypt.limlib.api.LimlibRegistryHooks.LimlibRegistryHook;
@@ -19,9 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.io.Reader;
 import java.util.Map;
 
 @SuppressWarnings({ "unchecked"})
@@ -29,11 +28,11 @@ import java.util.Map;
 public class RegistryLoaderMixin {
 
 
-	@Inject(method = "parseAndAdd", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Decoder;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;", shift = Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(method = "parseAndAdd", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Decoder;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;", shift = Shift.BEFORE), remap = false)
 	private static <E> void limlib$loadRegistryContents(MutableRegistry<E> registry, Decoder<E> decoder,
 														RegistryOps<JsonElement> registryOps, RegistryKey<E> key,
 														Resource resource, RegistryEntryInfo entryInfo,
-														CallbackInfo ci, Reader reader, JsonElement jsonElement) {
+														CallbackInfo ci, @Local JsonElement jsonElement) {
 		if (key.isOf(RegistryKeys.WORLD_PRESET)) {
 			JsonObject presetType = jsonElement.getAsJsonObject();
 			JsonObject dimensions = presetType.get("dimensions").getAsJsonObject();
@@ -43,7 +42,7 @@ public class RegistryLoaderMixin {
 							.add(world.getKey().getValue().toString(),
 									DimensionOptions.CODEC
 											.encodeStart(registryOps,
-													world.getValue().getDimensionOptionsSupplier().apply(new RegistryProvider() {
+													world.getValue().dimensionOptionsSupplier().apply(new RegistryProvider() {
 
 														@Override
 														public <T> RegistryEntryLookup<T> get(RegistryKey<Registry<T>> key) {
@@ -67,7 +66,7 @@ public class RegistryLoaderMixin {
 				.getEntrySet()
 				.forEach((world) -> ((MutableRegistry<DimensionType>) registry)
 					.add(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, world.getKey().getValue()),
-						world.getValue().getDimensionTypeSupplier().get(),
+						world.getValue().dimensionTypeSupplier().get(),
 							RegistryEntryInfo.DEFAULT));
 		}
 

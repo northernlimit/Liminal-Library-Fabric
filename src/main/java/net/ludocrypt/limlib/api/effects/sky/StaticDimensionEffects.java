@@ -12,10 +12,10 @@ import java.util.Optional;
 /**
  * A Sky effects controller
  * <p>
- * This is a simplification of the base {@link LDimensionEffects} class, where
+ * This is a simplification of the base {@link LiminalDimensionEffects} class, where
  * each setting is a static, non-changing value
  */
-public class StaticDimensionEffects extends LDimensionEffects {
+public class StaticDimensionEffects extends LiminalDimensionEffects {
 
 	public static final MapCodec<StaticDimensionEffects> CODEC = RecordCodecBuilder.mapCodec((instance) -> {
 		return instance.group(Codec.FLOAT.optionalFieldOf("cloud_height").stable().forGetter((effects) -> {
@@ -54,7 +54,7 @@ public class StaticDimensionEffects extends LDimensionEffects {
 		this.skyShading = skyShading;
 	}
 
-	public MapCodec<? extends LDimensionEffects> getCodec() {
+	public MapCodec<? extends LiminalDimensionEffects> getCodec() {
 		return CODEC;
 	}
 

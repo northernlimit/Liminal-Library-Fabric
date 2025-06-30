@@ -6,10 +6,10 @@ import org.jetbrains.annotations.Nullable;
 
 public interface SoundSystemAccess {
 
-	public void stopSoundsAtPosition(double x, double y, double z, @Nullable Identifier id,
-			@Nullable SoundCategory category);
+	void stopSoundsAtPosition(double x, double y, double z, @Nullable Identifier id,
+                              @Nullable SoundCategory category);
 
-	public static SoundSystemAccess get(Object obj) {
+	static SoundSystemAccess get(Object obj) {
 		return (SoundSystemAccess) obj;
 	}
 

@@ -37,8 +37,8 @@ public class DepthFirstMazeSolver extends DepthLikeMaze {
 	public void create() {
 		List<Stack<Vec2i>> paths = Lists.newArrayList();
 		this.beginnings.forEach((beginning) -> {
-			Stack<Vec2i> stack = new Stack<Vec2i>();
-			stack.push(new Vec2i(beginning.getX(), beginning.getY()));
+			Stack<Vec2i> stack = new Stack<>();
+			stack.push(new Vec2i(beginning.x(), beginning.y()));
 			Vec2i peek = stack.peek();
 			visit(peek);
 
@@ -94,19 +94,19 @@ public class DepthFirstMazeSolver extends DepthLikeMaze {
 
 				if (this.beginnings.contains(pos) || pos.equals(this.end)) {
 
-					if (pos.getX() == 0) {
+					if (pos.x() == 0) {
 						this.cellState(pos).down();
 					}
 
-					if (pos.getY() == 0) {
+					if (pos.y() == 0) {
 						this.cellState(pos).left();
 					}
 
-					if (pos.getX() == width - 1) {
+					if (pos.x() == width - 1) {
 						this.cellState(pos).up();
 					}
 
-					if (pos.getY() == height - 1) {
+					if (pos.y() == height - 1) {
 						this.cellState(pos).right();
 					}
 

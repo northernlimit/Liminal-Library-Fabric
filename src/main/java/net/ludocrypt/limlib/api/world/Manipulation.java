@@ -144,6 +144,43 @@ public enum Manipulation implements StringIdentifiable {
 		return this.rotate(manipulation.rotation).mirror(manipulation.mirror);
 	}
 
+	public Manipulation opposite() {
+		BlockRotation rotation = switch (this.getRotation()) {
+			case NONE -> BlockRotation.NONE;
+			case CLOCKWISE_90 -> BlockRotation.COUNTERCLOCKWISE_90;
+			case CLOCKWISE_180 -> BlockRotation.CLOCKWISE_180;
+			case COUNTERCLOCKWISE_90 -> BlockRotation.CLOCKWISE_90;
+		};
+		return Manipulation.of(rotation, this.getMirror());
+	}
+
+	public byte pack() {
+		return switch (this) {
+			case NONE -> 0;
+			case CLOCKWISE_90 -> 1;
+			case CLOCKWISE_180 -> 2;
+			case COUNTERCLOCKWISE_90 -> 3;
+			case FRONT_BACK -> 4;
+			case LEFT_RIGHT -> 5;
+			case TOP_LEFT_BOTTOM_RIGHT -> 6;
+			case TOP_RIGHT_BOTTOM_LEFT -> 7;
+		};
+	}
+
+	public static Manipulation unpack(byte id) {
+		return switch (id) {
+			case 0 -> NONE;
+			case 1 -> CLOCKWISE_90;
+			case 2 -> CLOCKWISE_180;
+			case 3 -> COUNTERCLOCKWISE_90;
+			case 4 -> FRONT_BACK;
+			case 5 -> LEFT_RIGHT;
+			case 6 ->  TOP_LEFT_BOTTOM_RIGHT;
+			case 7 -> TOP_RIGHT_BOTTOM_LEFT;
+			default -> throw new IllegalArgumentException("Can't resolve manipulation ordinal: " + id);
+		};
+	}
+
 	public static Manipulation[] rotations() {
 		return new Manipulation[] { Manipulation.NONE, Manipulation.CLOCKWISE_90, Manipulation.CLOCKWISE_180,
 			Manipulation.COUNTERCLOCKWISE_90 };

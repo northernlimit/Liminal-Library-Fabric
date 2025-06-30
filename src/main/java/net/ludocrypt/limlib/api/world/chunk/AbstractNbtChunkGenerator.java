@@ -11,6 +11,7 @@ import net.minecraft.loot.LootTables;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -97,7 +98,7 @@ public abstract class AbstractNbtChunkGenerator extends LiminalChunkGenerator {
 				if (blockEntity != null) {
 
 					if (state.isOf(blockEntity.getCachedState().getBlock())) {
-						blockEntity.readNbt(blockEntityNbt.get(), BuiltinRegistries.createWrapperLookup());
+						this.readBlockEntityNbt(blockEntity, blockEntityNbt.get(), BuiltinRegistries.createWrapperLookup());
 					}
 
 				}
@@ -111,6 +112,10 @@ public abstract class AbstractNbtChunkGenerator extends LiminalChunkGenerator {
 
 		}
 
+	}
+
+	protected void readBlockEntityNbt(BlockEntity blockEntity, NbtCompound blockEntityNbt, RegistryWrapper.WrapperLookup lookup) {
+		blockEntity.readNbt(blockEntityNbt, lookup);
 	}
 
 	protected RegistryKey<LootTable> getContainerLootTable(LootableContainerBlockEntity container) {

@@ -13,10 +13,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 
-public class LimlibWorld {
+public record LimlibWorld(Supplier<DimensionType> dimensionTypeSupplier,
+						  Function<RegistryProvider, DimensionOptions> dimensionOptionsSupplier) {
 
 	public static final RegistryKey<Registry<LimlibWorld>> LIMLIB_WORLD_KEY = RegistryKey
-		.ofRegistry(Identifier.of("limlib", "limlib_world"));
+			.ofRegistry(Identifier.of("limlib", "limlib_world"));
 
 	public static final SimpleRegistry<LimlibWorld> LIMLIB_WORLD = FabricRegistryBuilder
 			.createSimple(LIMLIB_WORLD_KEY)
@@ -24,27 +25,16 @@ public class LimlibWorld {
 			.buildAndRegister();
 
 
-
-	private Supplier<DimensionType> dimensionTypeSupplier;
-	private Function<RegistryProvider, DimensionOptions> dimensionOptionsSupplier;
-
 	public LimlibWorld(Supplier<DimensionType> dimensionTypeSupplier,
 					   Function<RegistryProvider, DimensionOptions> dimensionOptionsSupplier) {
 		this.dimensionTypeSupplier = Suppliers.memoize(dimensionTypeSupplier);
 		this.dimensionOptionsSupplier = dimensionOptionsSupplier;
 	}
 
-	public Supplier<DimensionType> getDimensionTypeSupplier() {
-		return dimensionTypeSupplier;
-	}
 
-	public Function<RegistryProvider, DimensionOptions> getDimensionOptionsSupplier() {
-		return dimensionOptionsSupplier;
-	}
+	public interface RegistryProvider {
 
-	public static interface RegistryProvider {
-
-		public <T> RegistryEntryLookup<T> get(RegistryKey<Registry<T>> key);
+		<T> RegistryEntryLookup<T> get(RegistryKey<Registry<T>> key);
 
 	}
 

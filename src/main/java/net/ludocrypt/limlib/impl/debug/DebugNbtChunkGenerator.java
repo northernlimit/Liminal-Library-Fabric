@@ -44,7 +44,7 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 			.group(RegistryOps.getEntryCodec(BiomeKeys.THE_VOID))
 			.apply(instance, instance.stable(DebugNbtChunkGenerator::new));
 	});
-	BidirectionalMap<Identifier, BlockPos> positions = new BidirectionalMap<Identifier, BlockPos>();
+	BidirectionalMap<Identifier, BlockPos> positions = new BidirectionalMap<>();
 
 	public DebugNbtChunkGenerator(RegistryEntry.Reference<Biome> reference) {
 		super(new FixedBiomeSource(reference), new DebugNbtGroup());
@@ -70,7 +70,7 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 
 		if (positions.isEmpty()) {
 			Map<Identifier, List<Resource>> ids = resourceManager
-					.findAllResources("structures/nbt", (id) -> id.getPath().endsWith(".nbt"));
+					.findAllResources("structure/nbt", (id) -> id.getPath().endsWith(".nbt"));
 			Map<Identifier, NbtPlacerUtil> nbts = new LinkedHashMap<>();
 
 			for (Identifier id : ids.keySet()) {
@@ -79,7 +79,7 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 			}
 
 			List<Map.Entry<Identifier, NbtPlacerUtil>> sortedNbts = new ArrayList<>(nbts.entrySet());
-			sortedNbts.sort((a, b) -> a.getKey().compareTo(b.getKey()));
+			sortedNbts.sort(Map.Entry.comparingByKey());
 			int maxSizeZ = 0;
 
 			for (int i = 0; i < sortedNbts.size(); i++) {
@@ -129,14 +129,14 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 									Block.FORCE_STATE);
 					BlockEntity be = chunkRegion.getBlockEntity(pos.add(-1, -1, -1));
 
-					if (be != null && be instanceof StructureBlockBlockEntity blockEntity) {
+					if (be instanceof StructureBlockBlockEntity blockEntity) {
 						blockEntity
 								.setSize(new Vec3i(this.structures.eval(id, resourceManager).sizeX,
 										this.structures.eval(id, resourceManager).sizeY,
 										this.structures.eval(id, resourceManager).sizeZ));
 						blockEntity
 								.setTemplateName(
-										id.toString().substring(0, id.toString().length() - 4).replaceFirst("structures/", ""));
+										id.toString().substring(0, id.toString().length() - 4).replaceFirst("structure/", ""));
 						blockEntity.setOffset(new BlockPos(1, 1, 1));
 						blockEntity.setIgnoreEntities(false);
 					}
@@ -186,8 +186,8 @@ public class DebugNbtChunkGenerator extends AbstractNbtChunkGenerator {
 
 	public static class BidirectionalMap<K, V> {
 
-		private Map<K, V> forwardMap = new HashMap<>();
-		private Map<V, K> reverseMap = new HashMap<>();
+		private final Map<K, V> forwardMap = new HashMap<>();
+		private final Map<V, K> reverseMap = new HashMap<>();
 
 		public void put(K key, V value) {
 			forwardMap.put(key, value);

@@ -4,9 +4,9 @@ package net.ludocrypt.limlib.api.world.maze;
  **/
 public class DilateMaze extends MazeComponent {
 
-	private MazeComponent mazeIn;
-	private int dilationX;
-	private int dilationY;
+	private final MazeComponent mazeIn;
+	private final int dilationX;
+	private final int dilationY;
 
 	public DilateMaze(MazeComponent mazeIn, int dilation) {
 		this(mazeIn, dilation, dilation);

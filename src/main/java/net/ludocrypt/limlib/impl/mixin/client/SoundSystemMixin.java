@@ -36,8 +36,7 @@ public abstract class SoundSystemMixin implements SoundSystemAccess {
 			@Nullable SoundCategory category) {
 		Consumer<SoundInstance> consumer = (soundInstance) -> {
 
-			if ((id != null ? soundInstance.getId().equals(id)
-					: true) && (soundInstance.getX() == x) && (soundInstance.getY() == y) && (soundInstance.getZ() == z)) {
+			if ((id == null || soundInstance.getId().equals(id)) && (soundInstance.getX() == x) && (soundInstance.getY() == y) && (soundInstance.getZ() == z)) {
 				this.stop(soundInstance);
 			}
 

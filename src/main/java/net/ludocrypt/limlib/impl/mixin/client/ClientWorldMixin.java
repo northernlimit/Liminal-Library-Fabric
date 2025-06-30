@@ -1,6 +1,6 @@
 package net.ludocrypt.limlib.impl.mixin.client;
 
-import net.ludocrypt.limlib.api.effects.sky.LDimensionEffects;
+import net.ludocrypt.limlib.api.effects.sky.LiminalDimensionEffects;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.world.ClientWorld;
@@ -32,8 +32,8 @@ public abstract class ClientWorldMixin extends World {
 							 int loadDistance, int simulationDistance, WorldRenderer worldRenderer,
 							 boolean debugWorld, long seed, int seaLevel, CallbackInfo ci) {
 
-		LDimensionEffects.MIXIN_WORLD_LOOKUP
-				.set(this.getRegistryManager().getOptional(LDimensionEffects.DIMENSION_EFFECTS_KEY).get());
+		LiminalDimensionEffects.MIXIN_WORLD_LOOKUP
+				.set(this.getRegistryManager().getOptional(LiminalDimensionEffects.DIMENSION_EFFECTS_KEY).get());
 	}
 
 }

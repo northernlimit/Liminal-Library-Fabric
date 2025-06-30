@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Mixin(TagGroupLoader.class)
-public class TagGroupLoaderMixin<T, O> implements TagGroupLoaderAccess<O> {
+public class TagGroupLoaderMixin<O> implements TagGroupLoaderAccess<O> {
 
 	@Unique
 	Optional<RegistryKey<? extends Registry<O>>> associatedRegistryKey = Optional.empty();

@@ -20,7 +20,7 @@ public class BuiltinDimensionTypesMixin {
 			.getEntrySet()
 			.forEach((entry) -> bootstrapContext
 				.register(RegistryKey.of(RegistryKeys.DIMENSION_TYPE, entry.getKey().getValue()),
-					entry.getValue().getDimensionTypeSupplier().get()));
+					entry.getValue().dimensionTypeSupplier().get()));
 	}
 
 }

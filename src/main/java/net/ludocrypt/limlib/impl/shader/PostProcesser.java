@@ -19,6 +19,7 @@ public class PostProcesser {
 
 	public PostProcesser(Identifier location) {
 		this.location = location;
+		this.init();
 	}
 
 	public void init() {
@@ -52,26 +53,20 @@ public class PostProcesser {
 	}
 
 	public void render(Framebuffer framebuffer, ObjectAllocator objectAllocator) {
-		try {
-			RenderSystem.disableBlend();
-			RenderSystem.disableDepthTest();
-			RenderSystem.resetTextureMatrix();
+        RenderSystem.disableBlend();
+        RenderSystem.disableDepthTest();
+        RenderSystem.resetTextureMatrix();
 
-			PostEffectProcessor shader = this.parseShader();
-			FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
+        FrameGraphBuilder frameGraphBuilder = new FrameGraphBuilder();
 
-			shader.render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, PostEffectProcessor.FramebufferSet
-					.singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer)));
+        shader.render(frameGraphBuilder, framebuffer.textureWidth, framebuffer.textureHeight, PostEffectProcessor.FramebufferSet
+                .singleton(PostEffectProcessor.MAIN, frameGraphBuilder.createObjectNode("main", framebuffer)));
 
-			frameGraphBuilder.run(objectAllocator);
-		} catch (IOException e) {
-			Limlib.LOGGER.error("Failed to render post processing shader: {}", this.location);
-			e.printStackTrace();
-		}
-	}
+        frameGraphBuilder.run(objectAllocator);
+    }
 
 	public boolean isInitialized() {
-		return this.shader != null;
+		return shader != null;
 	}
 
 	public PostEffectProcessor getShader() {
