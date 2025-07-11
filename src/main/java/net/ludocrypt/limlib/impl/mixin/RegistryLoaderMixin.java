@@ -17,22 +17,21 @@ import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.io.Reader;
 import java.util.Map;
 
-@SuppressWarnings({ "unchecked"})
+@SuppressWarnings("unchecked")
 @Mixin(RegistryLoader.class)
 public class RegistryLoaderMixin {
 
-
-	@Inject(method = "parseAndAdd", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Decoder;parse(Lcom/mojang/serialization/DynamicOps;Ljava/lang/Object;)Lcom/mojang/serialization/DataResult;", shift = Shift.BEFORE), remap = false)
+	@Inject(method = "Lnet/minecraft/registry/RegistryLoader;parseAndAdd(Lnet/minecraft/registry/MutableRegistry;Lcom/mojang/serialization/Decoder;Lnet/minecraft/registry/RegistryOps;Lnet/minecraft/registry/RegistryKey;Lnet/minecraft/resource/Resource;Lnet/minecraft/registry/entry/RegistryEntryInfo;)V", at = @At(value = "INVOKE_ASSIGN", target = "Lcom/google/gson/JsonParser;parseReader(Ljava/io/Reader;)Lcom/google/gson/JsonElement;", remap = false))
 	private static <E> void limlib$loadRegistryContents(MutableRegistry<E> registry, Decoder<E> decoder,
 														RegistryOps<JsonElement> registryOps, RegistryKey<E> key,
-														Resource resource, RegistryEntryInfo entryInfo,
-														CallbackInfo ci, @Local JsonElement jsonElement) {
+														Resource resource, RegistryEntryInfo entryInfo, CallbackInfo ci,
+														@Local Reader reader, @Local JsonElement jsonElement) {
 		if (key.isOf(RegistryKeys.WORLD_PRESET)) {
 			JsonObject presetType = jsonElement.getAsJsonObject();
 			JsonObject dimensions = presetType.get("dimensions").getAsJsonObject();
