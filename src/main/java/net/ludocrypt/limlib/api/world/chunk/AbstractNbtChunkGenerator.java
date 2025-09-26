@@ -12,13 +12,17 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.BuiltinRegistries;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.source.BiomeSource;
 
 import java.util.Optional;
+import java.util.function.Function;
 
 public abstract class AbstractNbtChunkGenerator extends LiminalChunkGenerator {
 
@@ -29,9 +33,21 @@ public abstract class AbstractNbtChunkGenerator extends LiminalChunkGenerator {
 		this(biomeSource, nbtGroup, new FunctionMap<>(NbtPlacerUtil::load));
 	}
 
+	public AbstractNbtChunkGenerator(BiomeSource biomeSource, Function<RegistryEntry<Biome>, GenerationSettings> generationSettingsGetter, NbtGroup nbtGroup) {
+		this(biomeSource, generationSettingsGetter, nbtGroup, new FunctionMap<>(NbtPlacerUtil::load));
+	}
+
 	public AbstractNbtChunkGenerator(BiomeSource biomeSource, NbtGroup nbtGroup,
 			FunctionMap<Identifier, NbtPlacerUtil, ResourceManager> structures) {
 		super(biomeSource);
+		this.nbtGroup = nbtGroup;
+		this.structures = structures;
+		this.nbtGroup.fill(structures);
+	}
+
+	public AbstractNbtChunkGenerator(BiomeSource biomeSource, Function<RegistryEntry<Biome>, GenerationSettings> generationSettingsGetter,
+									 NbtGroup nbtGroup, FunctionMap<Identifier, NbtPlacerUtil, ResourceManager> structures) {
+		super(biomeSource, generationSettingsGetter);
 		this.nbtGroup = nbtGroup;
 		this.structures = structures;
 		this.nbtGroup.fill(structures);

@@ -2,10 +2,12 @@ package net.ludocrypt.limlib.api.world.chunk;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.collection.BoundedRegionArray;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap.Type;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.GenerationSettings;
 import net.minecraft.world.biome.source.BiomeAccess;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -19,11 +21,16 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 import net.minecraft.world.gen.noise.NoiseConfig;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public abstract class LiminalChunkGenerator extends ChunkGenerator {
 
 	public LiminalChunkGenerator(BiomeSource biomeSource) {
-		super(biomeSource, (biome) -> GenerationSettings.INSTANCE);
+		super(biomeSource);
+	}
+
+	public LiminalChunkGenerator(BiomeSource biomeSource, Function<RegistryEntry<Biome>, GenerationSettings> generationSettingsGetter) {
+		super(biomeSource, generationSettingsGetter);
 	}
 
 	@Override
