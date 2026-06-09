@@ -3,8 +3,8 @@ package net.ludocrypt.limlib.impl.mixin.client;
 import net.ludocrypt.limlib.api.effects.LookupGrabber;
 import net.ludocrypt.limlib.api.effects.post.PostEffect;
 import net.ludocrypt.limlib.impl.access.GameRendererAccessor;
-import net.ludocrypt.limlib.impl.shader.PostProcesserManager;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.DefaultFramebufferSet;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.util.Pool;
@@ -43,7 +43,13 @@ public class GameRendererMixin implements GameRendererAccessor {
 
 			if (postEffect.shouldRender()) {
 				postEffect.beforeRender();
-				PostProcesserManager.INSTANCE.find(postEffect.getShaderLocation()).render(client.getFramebuffer(), this.pool);
+				postEffect.render(
+						this.client.getShaderLoader().loadPostEffect(postEffect.getShaderLocation(), DefaultFramebufferSet.MAIN_ONLY),
+						this.client.getFramebuffer(),
+						this.pool,
+						tickCounter,
+						tick
+				);
 			}
 
 		}

@@ -2,7 +2,13 @@ package net.ludocrypt.limlib.api.effects.post;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.ludocrypt.limlib.impl.mixin.RegistriesAccessor;
+import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.gl.PostEffectProcessor;
+import net.minecraft.client.render.RenderTickCounter;
+import net.minecraft.client.util.Pool;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
@@ -26,6 +32,10 @@ public abstract class PostEffect {
 	public abstract boolean shouldRender();
 
 	public abstract void beforeRender();
+
+	@Environment(EnvType.CLIENT)
+	public abstract void render(PostEffectProcessor postEffectProcessor, Framebuffer framebuffer,
+								Pool pool, RenderTickCounter tickCounter, boolean tick);
 
 	public abstract Identifier getShaderLocation();
 
