@@ -54,4 +54,7 @@ public class StaticPostEffect extends PostEffect {
 		return Identifier.of(shaderName.getNamespace(), shaderName.getPath());
 	}
 
+	public Identifier getShaderName() {
+		return this.shaderName;
+	}
 }
